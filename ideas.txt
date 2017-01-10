@@ -1,0 +1,20 @@
+- Velodyne - object recognition?
+- something with point clouds?
+- roll into motion planning / vehicle control project for final project? do the whole thing in winter?
+- ROS based
+- C++ based
+- try to emulate Willow Garage's completely autonomous robot, just have it explore around the lab / office / wherever?
+- tie in machine vision / sensor networks
+- Interaction with humans!
+
+
+> hearing sensors to localize objects and augment vision systems
+> lidar used for long-range sensing and navigation, closest object is pointed at with RGB camera or kinect on a swivel platform?
+
+
+Baby version of Willow Garage’s 4-days of autonomous PR2 operation.
+
+
+Smart and capable stereoscopic camera using Baxter hand cameras and transforms between them to localize objects in the world and ml to determine what they are - super useful and might actually be used by others?
+
+Use velodyne or Xtion/Kinect and a turntable to create full 3D portrait of something (sort of similar to using Baxter’s hands as mentioned above), and then be able to track the FULL object (not just the visible features) for collision detection (would need to save a profile of the surrounding workspace then too, since object would occlude anything). Could combine this with the one above and have Baxter do this and then manipulate the object?
