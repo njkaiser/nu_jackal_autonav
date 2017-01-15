@@ -1,0 +1,11 @@
+<launch>
+  <arg name="config" default="winter_project"/>
+
+  <include file="$(find winter_project)/launch/description.launch">
+    <arg name="config" value="$(arg config)" />
+  </include>
+
+  <param name="use_gui" value="true"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find winter_project)/rviz/model.rviz" />
+</launch>

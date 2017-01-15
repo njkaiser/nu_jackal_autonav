@@ -1,0 +1,13 @@
+<launch>
+  <arg name="config" default="winter_project" />
+
+  <param name="robot_description"
+         command="$(find jackal_description)/scripts/env_run
+                  $(find winter_project)/urdf/configs/$(arg config)
+                  $(find xacro)/xacro
+                  $(find winter_project)/urdf/jackal.urdf.xacro" />
+         <!-- command="$(find jackal_description)/scripts/env_run
+                  $(find jackal_description)/urdf/configs/$(arg config)
+                  $(find xacro)/xacro $(find jackal_description)/urdf/jackal.urdf.xacro" /> -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+</launch>
