@@ -31,19 +31,19 @@
   </xacro:if> -->
 
   <!-- If enabled, generate VLP16 -->
-  <xacro:include filename="accessories/VLP-16.urdf.xacro" />
+  <!-- <xacro:include filename="accessories/VLP-16.urdf.xacro" />
   <xacro:if value="$(optenv VLP16 0)">
     <VLP16 prefix="$(optenv VLP16_MOUNT front)"
                        topic="$(optenv VLP16_TOPIC front/scan)"/>
 
    <link name="dummy_link"></link>
-    <joint name="$VLP16_joint" type="fixed">
+    <joint name="VLP16_joint" type="fixed">
       <origin xyz="0 0 0"
               rpy="0 0 0" />
       <parent link="base_link" />
       <child link="dummy_link" />
     </joint>
-  </xacro:if>
+  </xacro:if> -->
 
 
   <!-- If enabled, generate the upgraded Navsat payload (a Novatel Smart6). -->

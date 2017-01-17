@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(winter_project)
 
+add_definitions(-std=c++11)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -9,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   message_generation
   std_msgs
+  genmsg
   geometry_msgs
   std_srvs
   cv_bridge
@@ -193,3 +196,16 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+
+find_package( PkgConfig REQUIRED )
+pkg_check_modules( ncurses++ REQUIRED ncurses++ )
+add_executable(keyboard_control src/keyboard_control.cpp)
+target_link_libraries(keyboard_control ${catkin_LIBRARIES} ncurses)
+target_link_libraries(keyboard_control ${ncurses++_LIBRARIES})
+add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
+
+# add_executable(listener src/listener.cpp)
+# target_link_libraries(listener ${catkin_LIBRARIES})
+# add_dependencies(listener beginner_tutorials_generate_messages_cpp)

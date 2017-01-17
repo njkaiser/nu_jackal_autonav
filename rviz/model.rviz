@@ -52,11 +52,34 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        dummy_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         fenders_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        front_camera:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_camera_beam:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_camera_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_camera_optical:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         front_left_wheel_link:
           Alpha: 1
           Show Axes: false
@@ -79,11 +102,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        navsat_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         rear_left_wheel_link:
           Alpha: 1
           Show Axes: false
@@ -105,63 +123,19 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_link:
-          Value: true
-        chassis_link:
-          Value: true
-        fenders_link:
-          Value: true
-        front_left_wheel_link:
-          Value: true
-        front_mount:
-          Value: true
-        front_right_wheel_link:
-          Value: true
-        imu_link:
-          Value: true
-        mid_mount:
-          Value: true
-        navsat_link:
-          Value: true
-        rear_left_wheel_link:
-          Value: true
-        rear_mount:
-          Value: true
-        rear_right_wheel_link:
-          Value: true
       Marker Scale: 0.5
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          chassis_link:
-            fenders_link:
-              {}
-            front_left_wheel_link:
-              {}
-            front_right_wheel_link:
-              {}
-            imu_link:
-              {}
-            mid_mount:
-              front_mount:
-                {}
-              rear_mount:
-                {}
-            navsat_link:
-              {}
-            rear_left_wheel_link:
-              {}
-            rear_right_wheel_link:
-              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -174,22 +148,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.02275
+      Distance: 1.0442
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.0434051
+        Y: 0.07771
+        Z: -0.0859402
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.800398
+      Pitch: 0.600399
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.92038
+      Yaw: 4.95038
     Saved: ~
 Window Geometry:
   Displays:
