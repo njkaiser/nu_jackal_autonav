@@ -17,8 +17,8 @@ private:
   const int freq = 25; // getch blocking time, in ms (below 20 isn't working very well - no idea why)
   const float max_lin_vel = 0.5;
   const float max_ang_vel = 1.5;
-  const float lin_accel = 0.1;
-  const float ang_accel = 0.1;
+  const float lin_accel = 0.05;
+  const float ang_accel = 0.2;
   int input; // for reading input from terminal
   geometry_msgs::Twist cmd; // output Twist command
 
@@ -41,11 +41,10 @@ public:
     noecho(); // don't echo getch() inputs to screen
 
     printw("Type a command and then press enter. Use 'w','a','s', and 'd' to navigate and 'q' to exit.\n");
-    refresh(); // print to screen, may or may not be necessary
+    // refresh(); // print to screen, may or may not be necessary
 
     while(m_nh.ok())
     {
-      // printw("input is: \r\n");
       input = getch();
       switch (input)
       {
@@ -63,7 +62,7 @@ public:
           return 0;
 
         default:
-          // linearly decline speed if no input is given:
+          // linearly reduce speeds if no input is given:
           if(cmd.linear.x > 0)
           { cmd.linear.x -= (cmd.linear.x - lin_accel < 0) ? cmd.linear.x : lin_accel; }
           else if(cmd.linear.x < 0)
@@ -80,15 +79,14 @@ public:
       if(cmd.angular.z > max_ang_vel) { cmd.angular.z = max_ang_vel; }
       if(cmd.angular.z < -max_ang_vel) { cmd.angular.z = -max_ang_vel; }
 
-      std::cout << "linear: " << cmd.linear.x << "\tangular: " << cmd.angular.z << '\r' << "     " << std::flush; //write current speed command
+      std::cout << "linear: " << std::setw(5) << cmd.linear.x << "\tangular: " << std::setw(5) << cmd.angular.z << '\r' << std::flush; //write current speed command
       cmd_pub.publish(cmd);
     }
-    // nocbreak(); //return terminal to "cooked" mode
     endwin();
     return 0;
-  }
+  } // end of function 'driveKeyboard()'
 
-};
+}; // end of class 'Move'
 
 
 
@@ -96,12 +94,9 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "keyboard_control"); // initialize ROS node
   ros::NodeHandle nh; // create node handle
-  // ros::Rate rate(5);
 
   Move move(nh);
   move.driveKeyboard();
 
-  // nocbreak(); //return terminal to "cooked" mode
-  // endwin();
   return 0;
 }
