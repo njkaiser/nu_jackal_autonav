@@ -3,7 +3,8 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /RobotModel1/Status1
       Splitter Ratio: 0.5
     Tree Height: 843
   - Class: rviz/Selection
@@ -52,10 +53,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        dummy_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         fenders_link:
           Alpha: 1
           Show Axes: false
@@ -116,6 +113,16 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        velodyne:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        velodyne_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -136,6 +143,36 @@ Visualization Manager:
         {}
       Update Interval: 0
       Value: false
+    - Alpha: 0.8
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 1.53472
+        Min Value: -0.176627
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 999999
+      Min Color: 0; 0; 0
+      Min Intensity: -999999
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic: /velodyne_points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -148,7 +185,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.0442
+      Distance: 5.65271
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -160,10 +197,10 @@ Visualization Manager:
         Z: -0.0859402
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.600399
+      Pitch: 0.355399
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.95038
+      Yaw: 0.537193
     Saved: ~
 Window Geometry:
   Displays:
