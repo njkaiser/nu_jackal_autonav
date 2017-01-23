@@ -1,0 +1,13 @@
+<launch>
+
+  <!-- Run the map server -->
+ <arg name="map_file" default="$(find winter_project)/maps/tutorial_map.yaml"/>
+ <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!--- Run AMCL -->
+ <include file="$(find winter_project)/launch/include/amcl.launch" />
+
+  <!--- Run Move Base -->
+ <include file="$(find winter_project)/launch/include/move_base.launch" />
+
+</launch>

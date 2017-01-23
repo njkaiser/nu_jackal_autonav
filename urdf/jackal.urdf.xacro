@@ -148,7 +148,7 @@
   </joint>
 
   <!-- TODO: Same note as applies to imu_link -->
-  <!-- <link name="navsat_link">
+  <link name="navsat_link">
     <visual>
       <geometry>
         <cylinder radius="0.026" length="0.016" />
@@ -161,7 +161,7 @@
     <parent link="chassis_link" />
     <child link="navsat_link" />
     <origin xyz="-0.180 0.126 0.1815" />
-  </joint> -->
+  </joint>
 
   <link name="mid_mount"></link>
   <joint name="mid_mount_joint" type="fixed">

@@ -1,0 +1,6 @@
+<launch>
+  <!-- start RVIZ -->
+  <param name="use_gui" value="true"/>
+  <arg name="config" default="view_model" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find winter_project)/rviz/$(arg config).rviz" />
+</launch>
