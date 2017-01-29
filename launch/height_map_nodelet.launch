@@ -1,0 +1,28 @@
+<launch>
+
+  <!-- start nodelet manager and driver nodelets -->
+  <!-- <include file="$(find velodyne_driver)/launch/nodelet_manager.launch">
+    <arg name="pcap" value="$(find velodyne_pointcloud)/tests/class.pcap"/>
+  </include> -->
+
+  <!-- start transform nodelet using test calibration file -->
+  <include file="$(find velodyne_pointcloud)/launch/transform_nodelet.launch">
+    <!-- <arg name="calibration" value="$(find velodyne_pointcloud)/tests/angles.config"/> -->
+    <arg name="calibration" value="$(find velodyne_pointcloud)/params/VLP16db.yaml"/>
+  </include>
+
+<!-- NEVER GOT THIS TO WORK, FOR SOME REASON -->
+<!-- THE STANDALONE NODE WORKED BUT THIS LAUNCHED -->
+<!-- VERSION RUNS BUT WON'T PUBLISH ITS 2 TOPICS -->
+<!-- WHICH ARE SUPPOSED TO BE velodyne_obstacles -->
+<!-- AND velodyne_clear (BOTH OF TYPE sensor_msgs/PointCloud2) -->
+
+  <!-- start heightmap nodelet -->
+  <include file="$(find velodyne_height_map)/launch/heightmap_nodelet.launch">
+    <param name="cell_size" value="0.2"/>
+    <param name="full_clouds" value="false"/>
+    <param name="grid_dimensions" value="30"/>
+    <param name="height_threshold" value="0.25"/> <!-- Minimum height difference that counts as an obstacle (meters). -->
+  </include>
+
+</launch>

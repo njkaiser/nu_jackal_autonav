@@ -2,13 +2,14 @@
 
   <arg name="use_map_topic" default="false"/>
   <arg name="scan_topic" default="front/scan" />
+  <!-- <arg name="scan_topic" default="velodyne_points" /> -->
 
   <node pkg="amcl" type="amcl" name="amcl">
     <param name="use_map_topic" value="$(arg use_map_topic)"/>
     <!-- Publish scans from best pose at a max of 10 Hz -->
     <param name="odom_model_type" value="diff"/>
     <param name="odom_alpha5" value="0.1"/>
-    <param name="gui_publish_rate" value="10.0"/>
+    <param name="gui_publish_rate" value="5.0"/>
     <param name="laser_max_beams" value="720"/>
     <param name="laser_min_range" value="0.1"/>
     <param name="laser_max_range" value="30.0"/>

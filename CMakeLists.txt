@@ -206,6 +206,10 @@ target_link_libraries(keyboard_control ${catkin_LIBRARIES} ncurses)
 target_link_libraries(keyboard_control ${ncurses++_LIBRARIES})
 add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
 
+find_package(octomap REQUIRED)
+include_directories(${OCTOMAP_INCLUDE_DIRS})
+link_libraries(${OCTOMAP_LIBRARIES})
+
 # add_executable(listener src/listener.cpp)
 # target_link_libraries(listener ${catkin_LIBRARIES})
 # add_dependencies(listener beginner_tutorials_generate_messages_cpp)

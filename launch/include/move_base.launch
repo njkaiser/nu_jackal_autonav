@@ -1,19 +1,21 @@
 <launch>
 
+  <!-- ADDED THIS IN TO INCREASE CODE REUSE -->
+  <!-- NOW I CAN INCLUDE THIS LAUNCH FILE FROM odom_navigation_demo.launch -->
+  <!-- AND JUST PASS IN THE CORRECT ARGUMENTS -->
+  
+  <arg name="local_costmap_dir" default="params/map_nav_params/local_costmap_params.yaml"/>
+  <arg name="global_costmap_dir" default="params/map_nav_params/global_costmap_params.yaml"/>
+
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-
-    <rosparam file="$(find jackal_navigation)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find jackal_navigation)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
-
-    <rosparam file="$(find jackal_navigation)/params/map_nav_params/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find jackal_navigation)/params/map_nav_params/global_costmap_params.yaml" command="load" />
-
-    <rosparam file="$(find jackal_navigation)/params/base_local_planner_params.yaml" command="load" />
-    <rosparam file="$(find jackal_navigation)/params/move_base_params.yaml" command="load" />
-
+    <rosparam file="$(find winter_project)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find winter_project)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find winter_project)/$(arg local_costmap_dir)" command="load" />
+    <rosparam file="$(find winter_project)/$(arg global_costmap_dir)" command="load" />
+    <rosparam file="$(find winter_project)/params/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find winter_project)/params/move_base_params.yaml" command="load" />
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
-
     <remap from="odom" to="odometry/filtered" />
   </node>
 

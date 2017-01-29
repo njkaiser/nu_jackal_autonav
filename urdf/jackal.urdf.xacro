@@ -6,6 +6,8 @@
   <xacro:property name="track" value="0.37559" />
   <xacro:property name="wheel_vertical_offset" value="0.0345" />
   <xacro:property name="footprint_vertical_offset" value="-0.0655" />
+  <!-- <xacro:property name="footprint_vertical_offset" value="-0.067" /> -->
+  <!-- <xacro:property name="footprint_vertical_offset" value="-0.1325" /> -->
 
   <xacro:property name="wheel_radius" value="0.098" />
   <xacro:property name="wheel_width" value="0.040" />
@@ -88,7 +90,8 @@
   <link name="base_link"></link>
 
   <joint name="base_link_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
+    <origin xyz="0 0 0.067" rpy="0 0 0" />
     <parent link="base_link"/>
     <child link="chassis_link" />
   </joint>
@@ -230,6 +233,6 @@
   <!-- Velodyne URDF, plugin, etc -->
   <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="front_mount" name="velodyne" topic="/velodyne_points">
-    <origin xyz="0 0 0.05" rpy="0 0 0" />
+    <origin xyz="0 0 0.049" rpy="0 0 0" />
   </VLP-16>
 </robot>

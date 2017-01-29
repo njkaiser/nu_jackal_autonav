@@ -4,7 +4,8 @@
   <!-- start gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0" />
-    <arg name="gui" value="true" />
+    <!-- <arg name="gui" value="true" /> -->
+    <arg name="gui" value="false" />
     <arg name="use_sim_time" value="true" />
     <arg name="headless" value="true" />
     <!-- <arg name="headless" value="false" /> -->
@@ -24,10 +25,6 @@
 
   <!-- spawn Jackal -->
    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-        args="-urdf -model jackal -param robot_description -x 0 -y 0 -z 0.1" />
-
-  <!-- start RVIZ -->
-  <!-- <param name="use_gui" value="true"/>
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find winter_project)/rviz/view_model.rviz" /> -->
+        args="-urdf -model jackal -param robot_description -x 0 -y 0.3 -z 0 -R 0 -P 0 -Y 0.75" />
 
 </launch>
