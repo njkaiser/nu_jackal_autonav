@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: Velodyne Points
 Visualization Manager:
   Class: ""
   Displays:
@@ -188,8 +188,8 @@ Visualization Manager:
     - Alpha: 0.8
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.55253
-        Min Value: -0.11112
+        Max Value: 2.74638
+        Min Value: -0.46918
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -220,10 +220,19 @@ Visualization Manager:
       Color Scheme: costmap
       Draw Behind: false
       Enabled: true
-      Name: 2D Costmap
+      Name: Global Costmap
       Topic: /move_base/global_costmap/costmap
       Unreliable: false
       Value: true
+    - Alpha: 0.7
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: false
+      Name: Local Costmap
+      Topic: /move_base/local_costmap/costmap
+      Unreliable: false
+      Value: false
     - Class: rviz/Image
       Enabled: false
       Image Topic: /camera/image_color
@@ -375,22 +384,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.13234
+      Distance: 7.37484
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -7.06801
-        Y: -0.720638
-        Z: -0.768303
+        X: 3.27473
+        Y: 3.22477
+        Z: 0.220045
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.570202
+      Pitch: 0.679797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.04639
+      Yaw: 0.661891
     Saved: ~
 Window Geometry:
   Camera Feed:
