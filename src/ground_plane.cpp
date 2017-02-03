@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl/PCLPointCloud2.h>
+#include <tf/transform_broadcaster.h>
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/conversions.h>
@@ -9,11 +10,10 @@
 
 #include <pcl/point_types.h>
 #include <velodyne_pointcloud/point_types.h> // velodyne_pointcloud::PointXYZIR
+#include <velodyne_pointcloud/rawdata.h>
 
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_cloud.h>
-#include <pcl/filters/passthrough.h>
-#include <pcl/filters/statistical_outlier_removal.h>
 
 // extra includes that I hope make my code work:
 #include <pcl/Vertices.h>
@@ -29,6 +29,8 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/sample_consensus/method_types.h>
 
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/crop_box.h>
 #include <pcl/filters/voxel_grid.h>
@@ -37,46 +39,57 @@
 #include <pcl/surface/mls.h>
 #include <pcl/surface/concave_hull.h>
 
-// #include <boost/thread/thread.hpp>
-
 #include <pcl/features/normal_3d.h>
 #include <pcl/kdtree/kdtree.h>
+// #include <boost/thread/thread.hpp>
 
-// no idea if this will be needed in the future, why not throw it on the heap
-#include <velodyne_pointcloud/rawdata.h>
-
-// class PCLFilter
-// {
-// public:
-//   typedef pcl::PointCloud<pcl::PointXYZI> Cloud;
-//   typedef typename Cloud::ConstPtr CloudConstPtr;
-//
-//   void passThroughFilter(const CloudConstPtr &cloud, Cloud::Ptr &cloud_filtered, std::string filter_target, float lower_bound, float upper_bound);
-//
-//   void noiseRemov alFilter(const CloudConstPtr &cloud, Cloud::Ptr &cloud_filtered);
-// };
+#include <Quaternion.h>
 
 
+void ring_filter(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud)
+{
+  pcl::PassThrough<pcl::PointXYZI> pass;
+  // pass.setInputCloud(cloud);
+  pass.setInputCloud(cloud);
+  pass.setFilterFieldName("x");
+  pass.setFilterLimits(-1.5, 1.5); // keep only ring 1 (maybe ring 0? not sure yet..)
+
+  // THIS IS NOT WORKING SINCE setFilterFieldName, WHEN SET TO "ring", DOES
+  // NOT WORK. THE FILTER TEMPLATE IS NOT SET UP TO HANDLE velodyne_pointcloud::PointXYZIR, THEREFORE THIS FILTER WILL NOT WORK UNLESS
+  // I MAKE MY OWN FILTER OR FIGURE OUT HOW TO FILTER BY RING SOME OTHER WAY...
+
+  pass.filter(*cloud);
+  std::cout << "FUCK THIS SHIT " << cloud->header << std::endl;
+}
 
 
 
+void box_filt(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud)//, std::string filt_criteria, int max, int min)
+{
+  // int dims = 3;
+  // std::string names[] = {"x", "y", "z"};
+  // int mins[dims] = {-4.0, -4.0, -0.1};
+  // int maxs[dims] = {4.0, 4.0, 0.1};
+  // for(int c = 0; c < dims; ++c)
+  // {
+    // pcl::PassThrough<pcl::PointXYZI> pass;
+    // pass.setInputCloud(cloud);
+    // pass.setFilterFieldName(names[c]);
+    // pass.setFilterLimits(mins[c], maxs[c]);
+    // pass.filter(*cloud);
 
+    const Eigen::Vector4f & mins = Eigen::Vector4f(-4.0, -4.0, -0.1, -99.9);
+    const Eigen::Vector4f & maxs = Eigen::Vector4f(4.0, 4.0, 0.1, 99.9);
 
-
-
-
-// void ring_filter(const sensor_msgs::PointCloud2ConstPtr& input, pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_passthrough)
-// void PCLFilter::passThroughFilter(const CloudConstPtr &cloud, Cloud::Ptr &cloud_filtered)
-// void ring_filter(pcl::PointCloud<pcl::PointXYZI> &cloud)
-// void ring_filter(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud)
-// {
-//   pcl::PassThrough<pcl::PointXYZI> pass;
-//   pass.setInputCloud(boost::make_shared<pcl::PointCloud<pcl::PointXYZI>>(*cloud));
-//   // pass.setInputCloud(cloud);
-//   pass.setFilterFieldName("ring");
-//   pass.setFilterLimits(-1.5, 1.5); // keep only ring 1 (maybe ring 0? not sure yet..)
-//   pass.filter(*cloud);
-// }
+    // pcl::CropBox<pcl::PointCloud<pcl::PointXYZI> > cb;
+    pcl::CropBox<pcl::PointXYZI> cb;
+    cb.setMax(maxs);
+    cb.setMin(mins);
+    cb.setInputCloud(cloud);
+    cb.filter(*cloud);
+    // cb.filter(filteredIndices);
+  // }
+}
 
 
 // void noise_filter(const pcl::PointCloud<pcl::PointXYZI>::ConstPtr &cloud, pcl::PointCloud<pcl::PointXYZI>::ConstPtr::Ptr &cloud_filtered)
@@ -88,48 +101,144 @@
 //   SOR_filt.pcl::Filter<pcl::PointXYZI>::filter(*cloud_filtered);
 // }
 
-// int i = 0;
-// void input_cb(const boost::shared_ptr<const sensor_msgs::PointCloud2>& input)
-void input_cb(const sensor_msgs::PointCloud2ConstPtr& input)
+// void input_cb(const sensor_msgs::PointCloud2ConstPtr& input)
+// {
+//
+//   std::cout << "COUNT: " << i++ << std::endl;
+//   pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>);
+//   pcl::fromROSMsg(*input, *cloud);
+//
+//   // pcl::PCLPointCloud2 pcl_pc;
+//   // pcl_conversions::toPCL(*input, pcl_pc);
+//
+//   // pcl::PointCloud<pcl::PointXYZ> cloud;
+//   //
+//   // pcl::fromPCLPointCloud2(pcl_pc, cloud);
+//   // pcl::YOUR_PCL_FUNCTION(cloud,...);
+//
+//   // std::cout << input->header << std::endl;
+//   // std::cout << cloud->header << std::endl;
+//   // std::cout << input->fields[0] << std::endl;
+//   // std::cout << input->fields[1] << std::endl;
+//   // std::cout << input->fields[2] << std::endl;
+//   // std::cout << input->fields[3] << std::endl;
+//   // std::cout << input->fields[4] << std::endl; // this was NOT causing segfault when I checked, even though I'm currently using PointXYZI instead of PointXYZIR and there should be no field 4 entry...
+//
+//   // ring_filter(cloud);
+//   box_filt(cloud);
+//
+//   std::cout << "input width: " << input->width << std::endl;
+//   std::cout << "cloud width: " << cloud->width << std::endl;
+//
+//   // ransac(input, cloud_new);
+//
+//   // const sensor_msgs::PointCloud2 output;
+//   sensor_msgs::PointCloud2::Ptr toROSMsg(pcl::PointCloud<pcl::PointXYZI>& output);
+//   // pcl::toROSMsg(&(*cloud), &output);
+//   // IS THERE ANY WAY (BESIDES GLOBAL VARIABLE) TO PASS THIS IN?
+//   ros::Publisher cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/ground_plane", 1);
+//   cloud_pub.publish(output);
+// }
+
+
+class GroundPlane
 {
-  // std::cout << "COUNT: " << i++ << std::endl;
-  // pcl::PCLPointCloud2 pcl_pc2;
-  // pcl_conversions::toPCL(*input,pcl_pc2);
-  pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>);
-  pcl::fromROSMsg(*input, *cloud);
-  std::cout << input->header << std::endl;
-  std::cout << cloud->header << std::endl;
-  // std::cout << input->fields[0] << std::endl;
-  // std::cout << input->fields[1] << std::endl;
-  // std::cout << input->fields[2] << std::endl;
-  std::cout << input->fields[3] << std::endl;
-  std::cout << input->fields[4] << std::endl; // this does NOT cause segfault, even though I'm currently using PointXYZI instead of PointXYZIR
-  // std::cout << cloud->inte << std::endl;
+private:
+  ros::NodeHandle nh;
+  ros::Publisher cloud_pub;
+  ros::Subscriber input_sub;
 
-  // ring_filter(cloud);
+public:
+  GroundPlane() // constructor
+  {
+    cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/ground_plane", 1);
 
-  // std::cout << "input width: " << input->width << std::endl;
-  // std::cout << "cloud width: " << cloud->width << std::endl;
+    input_sub = nh.subscribe("/velodyne_points", 1, &GroundPlane::input_cb, this); // subscribe to input PointCloud2 data
+  } // end of constructor
 
-  // pcl::PointCloud<velodyne_pointcloud::PointXYZIR>::Ptr cloud_new(new pcl::PointCloud<velodyne_pointcloud::PointXYZIR>);
-  // std::cout << cloud_new->height << std::endl;
-  // ransac(input, cloud_new);
-  // pub.publish(*cloud_new);
-  // velodyne_pointcloud::PointXYZI temp;
-  // pcl::PointXYZI temp;
-}
+  void input_cb(const sensor_msgs::PointCloud2ConstPtr& input)
+  {
+    // NO IDEA WHAT I'M DOING, TRYING STUFF. OPTION 1:
+    static tf::TransformBroadcaster br;
+    tf::Transform transform;
+    transform.setOrigin(tf::Vector3(msg->x, msg->y, 0.0) );
+    tf::Quaternion q;
+    q.setRPY(0, 0, msg->theta);
+    transform.setRotation(q);
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name));
+
+
+    // NO IDEA WHAT I'M DOING, TRYING STUFF. OPTION 2:
+    //since all odometry is 6DOF we'll need a quaternion created from yaw
+    geometry_msgs::Quaternion odom_quat = {0, 0, 0, 1};
+
+    //first, we'll publish the transform over tf
+    geometry_msgs::TransformStamped transform;
+    transform.header.stamp = current_time;
+    transform.header.frame_id = "odom";
+    transform.child_frame_id = "base_link";
+
+    transform.transform.translation.x = x;
+    transform.transform.translation.y = y;
+    transform.transform.translation.z = 0.0;
+    transform.transform.rotation = odom_quat;
+
+    //send the transform
+    odom_broadcaster.sendTransform(odom_trans);
+
+
+
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>);
+    pcl::fromROSMsg(*input, *cloud);
+
+    // pcl::PCLPointCloud2 pcl_pc;
+    // pcl_conversions::toPCL(*input, pcl_pc);
+
+    // pcl::PointCloud<pcl::PointXYZ> cloud;
+    //
+    // pcl::fromPCLPointCloud2(pcl_pc, cloud);
+    // pcl::YOUR_PCL_FUNCTION(cloud,...);
+
+    // std::cout << input->header << std::endl;
+    // std::cout << cloud->header << std::endl;
+    // std::cout << input->fields[0] << std::endl;
+    // std::cout << input->fields[1] << std::endl;
+    // std::cout << input->fields[2] << std::endl;
+    // std::cout << input->fields[3] << std::endl;
+    // std::cout << input->fields[4] << std::endl; // this was NOT causing segfault when I checked, even though I'm currently using PointXYZI instead of PointXYZIR and there should be no field 4 entry...
+
+    // ring_filter(cloud);
+    box_filt(cloud);
+
+    std::cout << "input width: " << input->width << std::endl;
+    std::cout << "cloud width: " << cloud->width << std::endl;
+
+    // ransac(input, cloud_new);
+
+    // const sensor_msgs::PointCloud2 output;
+    sensor_msgs::PointCloud2 output;
+    sensor_msgs::PointCloud2::Ptr toROSMsg(pcl::PointCloud<pcl::PointXYZI>& output);
+    // pcl::toROSMsg(&(*cloud), &output);
+    // IS THERE ANY WAY (BESIDES GLOBAL VARIABLE) TO PASS THIS IN?
+    // ros::Publisher cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/ground_plane", 1);
+    cloud_pub.publish(output);
+  } // end of input_cb()
+
+}; // end of class GroundPlane
+
 
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "test"); // initialize ROS node
-  ros::NodeHandle nh; // create node handle
-  ros::Subscriber sub = nh.subscribe ("velodyne_points", 1, input_cb); // subscribe to input PointCloud2 data
+  ros::init(argc, argv, "pointcloud_manip"); // initialize ROS node
+  // ros::NodeHandle nh; // create node handle
 
-  // Create a ROS publisher for the output point cloud
-  // pub = nh.advertise<sensor_msgs::PointCloud2> ("output", 1);
+  GroundPlane gp;
+
+  // ros::Subscriber sub = nh.subscribe ("/velodyne_points", 1, input_cb); // subscribe to input PointCloud2 data
+
   // pub_obj = nh.advertise<sensor_msgs::PointCloud2> ("objects", 1);
 
-  ros::spin ();
+  ros::spin();
   return 0;
-}
+} // end of main()
