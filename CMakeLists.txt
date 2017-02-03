@@ -10,17 +10,24 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   message_generation
-  std_msgs
   genmsg
+  pcl_ros
+  pcl_conversions
+  pcl_msgs
+  std_msgs
   geometry_msgs
-  std_srvs
-  cv_bridge
+  sensor_msgs
+  velodyne_msgs
+#  std_srvs
+#  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(OpenCV)
-
+# find_package(OpenCV)
+#find_package(octomap REQUIRED)
+find_package(PCL REQUIRED)
+find_package(PkgConfig REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -73,12 +80,12 @@ find_package(OpenCV)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-  std_srvs
-)
+# generate_messages(
+#  DEPENDENCIES
+#  std_msgs
+#  geometry_msgs
+#  std_srvs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -197,19 +204,24 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+# include_directories(include ${catkin_INCLUDE_DIRS})
 
-find_package( PkgConfig REQUIRED )
+
 pkg_check_modules( ncurses++ REQUIRED ncurses++ )
 add_executable(keyboard_control src/keyboard_control.cpp)
 target_link_libraries(keyboard_control ${catkin_LIBRARIES} ncurses)
 target_link_libraries(keyboard_control ${ncurses++_LIBRARIES})
 add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
 
-find_package(octomap REQUIRED)
-include_directories(${OCTOMAP_INCLUDE_DIRS})
-link_libraries(${OCTOMAP_LIBRARIES})
 
-# add_executable(listener src/listener.cpp)
-# target_link_libraries(listener ${catkin_LIBRARIES})
-# add_dependencies(listener beginner_tutorials_generate_messages_cpp)
+#include_directories(${OCTOMAP_INCLUDE_DIRS})
+#link_libraries(${OCTOMAP_LIBRARIES})
+
+#include_directories(include ${catkin_INCLUDE_DIRS})
+
+
+include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )
+add_executable(ground_plane src/ground_plane.cpp)
+add_definitions(${PCL_DEFINITIONS})
+target_link_libraries(ground_plane ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
+add_dependencies(ground_plane ${catkin_EXPORTED_TARGETS} ground_plane)
