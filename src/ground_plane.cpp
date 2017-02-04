@@ -43,7 +43,7 @@
 #include <pcl/kdtree/kdtree.h>
 // #include <boost/thread/thread.hpp>
 
-#include <Quaternion.h>
+// #include <Quaternion.h>
 
 
 void ring_filter(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud)
@@ -147,6 +147,7 @@ private:
   ros::NodeHandle nh;
   ros::Publisher cloud_pub;
   ros::Subscriber input_sub;
+  ros::Subscriber tf_sub;
 
 public:
   GroundPlane() // constructor
@@ -154,39 +155,20 @@ public:
     cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/ground_plane", 1);
 
     input_sub = nh.subscribe("/velodyne_points", 1, &GroundPlane::input_cb, this); // subscribe to input PointCloud2 data
+
+    // tf_sub = nh.subscribe("velodyne", 1, &GroundPlane::tf_cb);
+
   } // end of constructor
 
   void input_cb(const sensor_msgs::PointCloud2ConstPtr& input)
   {
-    // NO IDEA WHAT I'M DOING, TRYING STUFF. OPTION 1:
-    static tf::TransformBroadcaster br;
-    tf::Transform transform;
-    transform.setOrigin(tf::Vector3(msg->x, msg->y, 0.0) );
-    tf::Quaternion q;
-    q.setRPY(0, 0, msg->theta);
-    transform.setRotation(q);
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", turtle_name));
-
-
-    // NO IDEA WHAT I'M DOING, TRYING STUFF. OPTION 2:
-    //since all odometry is 6DOF we'll need a quaternion created from yaw
-    geometry_msgs::Quaternion odom_quat = {0, 0, 0, 1};
-
-    //first, we'll publish the transform over tf
-    geometry_msgs::TransformStamped transform;
-    transform.header.stamp = current_time;
-    transform.header.frame_id = "odom";
-    transform.child_frame_id = "base_link";
-
-    transform.transform.translation.x = x;
-    transform.transform.translation.y = y;
-    transform.transform.translation.z = 0.0;
-    transform.transform.rotation = odom_quat;
-
-    //send the transform
-    odom_broadcaster.sendTransform(odom_trans);
-
-
+    // static tf::TransformBroadcaster br;
+    // tf::Transform transform;
+    // transform.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
+    // tf::Quaternion q;
+    // q.setRPY(0, 0, 0);
+    // transform.setRotation(q);
+    // br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "velodyne", "pointcloud_manip"));
 
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::fromROSMsg(*input, *cloud);
@@ -209,20 +191,45 @@ public:
 
     // ring_filter(cloud);
     box_filt(cloud);
+    // std::cout << cloud->data.x << std::endl;
+    // for (size_t i = 0; i < cloud->points.size (); ++i)
+    // std::cout << " x: " << cloud->points[i].x
+    //           << " y: " << cloud->points[i].y
+    //           << " z: " << cloud->points[i].z
+    //           << " I: " << cloud->points[i].intensity;
+    // std::cout << std::endl;
 
-    std::cout << "input width: " << input->width << std::endl;
-    std::cout << "cloud width: " << cloud->width << std::endl;
+    std::cout << "input width: " << input->width << "\tcloud width: " << cloud->width << std::endl;
 
     // ransac(input, cloud_new);
 
     // const sensor_msgs::PointCloud2 output;
-    sensor_msgs::PointCloud2 output;
-    sensor_msgs::PointCloud2::Ptr toROSMsg(pcl::PointCloud<pcl::PointXYZI>& output);
+    // sensor_msgs::PointCloud2 output;
+    // sensor_msgs::PointCloud2::Ptr toROSMsg(pcl::PointCloud<pcl::PointXYZI>& output);
+    // output.header.frame_id = "velodyne"; // same frame as velodyne data
+    // output.header.stamp = ros::Time::now().toNSec();
+    // output.height = output.width = 1;
+    // output.points.push_back (pcl::PointXYZ(1.0, 2.0, 3.0));
+
+
     // pcl::toROSMsg(&(*cloud), &output);
     // IS THERE ANY WAY (BESIDES GLOBAL VARIABLE) TO PASS THIS IN?
     // ros::Publisher cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/ground_plane", 1);
-    cloud_pub.publish(output);
+    // cloud_pub.publish(output);
+    cloud_pub.publish(cloud);
   } // end of input_cb()
+
+
+  // void tf_cb(void)//const turtlesim::PoseConstPtr& msg){
+  // {
+  // static tf::TransformBroadcaster br;
+  // tf::Transform transform;
+  // transform.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
+  // tf::Quaternion q;
+  // q.setRPY(0, 0, 0);
+  // transform.setRotation(q);
+  // br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "velodyne", "pointcloud_manip"));
+  // }
 
 }; // end of class GroundPlane
 
