@@ -3,6 +3,9 @@ project(winter_project)
 
 # add_definitions(-std=c++11) THIS WAS CAUSING SEGFAULT WITH CERTAIN PCL METHODS
 
+# SHOULDN'T NEED THIS IF THE PROGRAM COMPILED JUST FINE...
+# FIND_LIBRARY(HDF5_LIBRARY hdf5 /usr/local/hdf5/lib/)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -204,8 +207,6 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-# include_directories(include ${catkin_INCLUDE_DIRS})
-
 
 pkg_check_modules( ncurses++ REQUIRED ncurses++ )
 add_executable(keyboard_control src/keyboard_control.cpp)
@@ -217,7 +218,6 @@ add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
 #include_directories(${OCTOMAP_INCLUDE_DIRS})
 #link_libraries(${OCTOMAP_LIBRARIES})
 
-#include_directories(include ${catkin_INCLUDE_DIRS})
 
 
 include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )
@@ -225,3 +225,10 @@ add_executable(ground_plane src/ground_plane.cpp)
 add_definitions(${PCL_DEFINITIONS})
 target_link_libraries(ground_plane ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
 add_dependencies(ground_plane ${catkin_EXPORTED_TARGETS} ground_plane)
+
+
+# include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )
+add_executable(floor_finder src/floor_finder.cpp)
+# add_definitions(${PCL_DEFINITIONS})
+target_link_libraries(floor_finder ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
+add_dependencies(floor_finder ${catkin_EXPORTED_TARGETS} floor_finder)

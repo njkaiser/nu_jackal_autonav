@@ -16,7 +16,6 @@
     <remap from="~input" to="/velodyne_points" />
     <remap from="~output" to="/velodyne_points/cropbox" />
     <rosparam>
-      <param name="circumference" value="$(eval 2.* 3.1415 * arg('radius'))"/>
       <!-- min_x: "$(eval -4.0 - arg('x_offset'))"
       max_x: "$(eval 4.0 - arg('x_offset'))"
       min_y: "$(eval -4.0 - arg('y_offset'))"
@@ -58,24 +57,47 @@
 
 
   <!-- Run a VoxelGrid filter to clean NaNs and downsample the data -->
-  <!-- <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen"> -->
   <node pkg="nodelet" type="nodelet" name="voxel" args="load pcl/VoxelGrid pcl_manager" output="screen">
     <remap from="~input" to="/velodyne_points/rmvd_outliers" />
     <remap from="~output" to="/velodyne_points/voxeled" />
     <rosparam>
+      <!-- NOT SURE I NEED THESE PARAMATERS SINCE I'VE ALREADY PASSED DATA THROUGH A CROPBOX FILTER - WORRY ABOUT THIS LATER -->
       filter_field_name: z
-      filter_limit_min: 0.01
-      filter_limit_max: 0.1
+      filter_limit_min: -0.438
+      filter_limit_max: -0.238
       filter_limit_negative: False
-      leaf_size: 0.01
+      <!-- leaf_size: 0.01 -->
+      leaf_size: [0.015, 0.015, 0.015]
       <!-- output_frame: /oriented_optimization_frame -->
     </rosparam>
   </node>
 
 
+  <!-- Estimate point normals -->
+  <node pkg="nodelet" type="nodelet" name="normal_estimation" args="load pcl/NormalEstimation pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/voxeled" />
+    <!-- AS SOON AS I TRY TO SUBSCRIBE TO (rostopic echo) THIS TOPIC,    -->
+    <!-- THE pcl_manager NODELET DIES... WTF?!?!?!?!? -->
+    <remap from="~output" to="/TEST" />
+    <rosparam>
+      <!-- # -[ Mandatory parameters -->
+      <!-- SET ONLY k_search OR radius search, NOT BOTH -->
+      <!-- k_search: 0 -->
+      k_search: 50
+      <!-- radius_search: 0.015 -->
+      <!-- radius_search: 0.515 -->
+      radius_search: 0
+      <!-- # Set the spatial locator. Possible values are: 0 (ANN), 1 (FLANN), 2 (organized) -->
+      <!-- spatial_locator: 0 -->
+      spatial_locator: 1
+      use_sim_time: false
+    </rosparam>
+  </node>
+
+
   <!-- Segment the table plane -->
-  <!-- <node pkg="nodelet" type="nodelet" name="planar_segmentation" args="load pcl/SACSegmentationFromNormals pcl_manager" output="screen"> -->
-    <!-- <remap from="~input"   to="/velodyne_points/voxeled" />
+  <!-- <node pkg="nodelet" type="nodelet" name="planar_segmentation" args="load pcl/SACSegmentationFromNormals pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/voxeled" />
     <remap from="~normals" to="/normal_estimation/output" />
     <rosparam> -->
       <!-- # -[ Mandatory parameters
@@ -106,15 +128,15 @@
       method_type: 0
       optimize_coefficients: true
       normal_distance_weight: 0.1 -->
-      <!-- 0.09 rad = ~5 degrees -->
       <!-- eps_angle: 0.09 -->
+      <!-- 0.09 rad = ~5 degrees -->
     <!-- </rosparam>
   </node> -->
 
 
   <!-- IDK WHAT THIS EVEN DOES, BUT I LIKE IT -->
   <!-- <node pkg="nodelet" type="nodelet" name="extract_plane_indices" args="load pcl/ExtractIndices pcl_manager" output="screen">
-    <remap from="~input"   to="/velodyne_points/rmvd_outliers" />
+    <remap from="~input"   to="/velodyne_points/voxeled" />
     <remap from="~indices" to="/planar_segmentation/inliers" />
     <rosparam>
       negative: true
