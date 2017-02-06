@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   sensor_msgs
   velodyne_msgs
+  nav_msgs
 #  std_srvs
 #  cv_bridge
 )
@@ -232,3 +233,5 @@ add_executable(floor_finder src/floor_finder.cpp)
 # add_definitions(${PCL_DEFINITIONS})
 target_link_libraries(floor_finder ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
 add_dependencies(floor_finder ${catkin_EXPORTED_TARGETS} floor_finder)
+
+# add_executable(ground_plane_cheat src/ground_plane_cheat.cpp)

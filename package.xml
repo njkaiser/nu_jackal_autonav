@@ -50,6 +50,7 @@
   <build_depend>pcl_ros</build_depend>
   <build_depend>pcl_conversions</build_depend>
   <build_depend>pcl_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
   <build_depend>libpcl-all-dev</build_depend>
   <build_depend>ncurses++</build_depend>
   <build_depend>octomap</build_depend>
@@ -62,6 +63,7 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>libpcl-all</run_depend>
   <run_depend>pcl_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
   <run_depend>pcl_conversions</run_depend>
   <run_depend>pcl_ros</run_depend>
   <run_depend>ncurses++</run_depend>

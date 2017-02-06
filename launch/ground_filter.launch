@@ -7,24 +7,22 @@
   <arg name="z_offset" value="0.338" />
 
   <!-- START NODELET MANAGER -->
-  <!-- <node pkg="nodelet" type="nodelet" name="velodyne_nodelet_manager" args="manager" output="screen"/> -->
   <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
 
   <!-- FILTER OUT POINTS NOT NEAR GROUND LEVEL -->
-  <!-- <node pkg="nodelet" type="nodelet" name="crop_box_filter" args="load pcl/CropBox velodyne_nodelet_manager" output="screen"> -->
   <node pkg="nodelet" type="nodelet" name="cropbox_filter" args="load pcl/CropBox pcl_manager" output="screen">
     <remap from="~input" to="/velodyne_points" />
     <remap from="~output" to="/velodyne_points/cropbox" />
     <rosparam>
-      <!-- min_x: "$(eval -4.0 - arg('x_offset'))"
-      max_x: "$(eval 4.0 - arg('x_offset'))"
-      min_y: "$(eval -4.0 - arg('y_offset'))"
-      max_y: "$(eval 4.0 - arg('y_offset'))"
-      min_z: "$(eval -0.1 - arg('z_offset'))"
-      max_z: "$(eval 0.1 - arg('z_offset'))" -->
-      <!-- HARDCODED BELOW VALUES IN, ARGS WEREN'T WORKING FOR SOME REASON -->
-      <!-- TO CLARIFY, THEY WORKED, BUT THE LIMITS CLEARLY WERE WRONG -->
-      <!-- DIDN'T FEEL LIKE TROUBLESHOOTING AT THE MOMENT -->
+<!-- min_x: "$(eval -4.0 - arg('x_offset'))"
+max_x: "$(eval 4.0 - arg('x_offset'))"
+min_y: "$(eval -4.0 - arg('y_offset'))"
+max_y: "$(eval 4.0 - arg('y_offset'))"
+min_z: "$(eval -0.1 - arg('z_offset'))"
+max_z: "$(eval 0.1 - arg('z_offset'))" -->
+<!-- HARDCODED BELOW VALUES IN, ARGS WEREN'T WORKING FOR SOME REASON -->
+<!-- TO CLARIFY, THEY WORKED, BUT THE LIMITS CLEARLY WERE WRONG -->
+<!-- DIDN'T FEEL LIKE TROUBLESHOOTING AT THE MOMENT -->
 
       min_x: -4.12
       max_x: 3.88
@@ -33,12 +31,12 @@
       min_z: -0.438
       max_z: -0.238
 
-      <!-- min_x: -4.0
-      max_x: 4.0
-      min_y: -4.0
-      max_y: 4.0
-      min_z: -0.1
-      max_z: 0.1 -->
+<!-- min_x: -4.0
+max_x: 4.0
+min_y: -4.0
+max_y: 4.0
+min_z: -0.1
+max_z: 0.1 -->
     </rosparam>
   </node>
 
@@ -61,38 +59,39 @@
     <remap from="~input" to="/velodyne_points/rmvd_outliers" />
     <remap from="~output" to="/velodyne_points/voxeled" />
     <rosparam>
-      <!-- NOT SURE I NEED THESE PARAMATERS SINCE I'VE ALREADY PASSED DATA THROUGH A CROPBOX FILTER - WORRY ABOUT THIS LATER -->
+<!-- NOT SURE I NEED THESE PARAMATERS SINCE I'VE ALREADY PASSED DATA THROUGH A CROPBOX FILTER - WORRY ABOUT THIS LATER -->
       filter_field_name: z
       filter_limit_min: -0.438
       filter_limit_max: -0.238
       filter_limit_negative: False
-      <!-- leaf_size: 0.01 -->
+<!-- leaf_size: 0.01 -->
       leaf_size: [0.015, 0.015, 0.015]
-      <!-- output_frame: /oriented_optimization_frame -->
+<!-- output_frame: /oriented_optimization_frame -->
     </rosparam>
   </node>
 
 
   <!-- Estimate point normals -->
-  <node pkg="nodelet" type="nodelet" name="normal_estimation" args="load pcl/NormalEstimation pcl_manager" output="screen">
-    <remap from="~input" to="/velodyne_points/voxeled" />
-    <!-- AS SOON AS I TRY TO SUBSCRIBE TO (rostopic echo) THIS TOPIC,    -->
-    <!-- THE pcl_manager NODELET DIES... WTF?!?!?!?!? -->
-    <remap from="~output" to="/TEST" />
-    <rosparam>
-      <!-- # -[ Mandatory parameters -->
-      <!-- SET ONLY k_search OR radius search, NOT BOTH -->
-      <!-- k_search: 0 -->
-      k_search: 50
-      <!-- radius_search: 0.015 -->
-      <!-- radius_search: 0.515 -->
-      radius_search: 0
-      <!-- # Set the spatial locator. Possible values are: 0 (ANN), 1 (FLANN), 2 (organized) -->
-      <!-- spatial_locator: 0 -->
-      spatial_locator: 1
-      use_sim_time: false
+  <!-- <node pkg="nodelet" type="nodelet" name="normal_estimation" args="load pcl/NormalEstimation pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/voxeled" /> -->
+<!-- AS SOON AS I TRY TO SUBSCRIBE TO (rostopic echo) THIS TOPIC,    -->
+<!-- THE pcl_manager NODELET DIES... WTF?!?!?!?!? -->
+    <!-- <remap from="~output" to="/TEST" />
+    <rosparam> -->
+<!-- # -[ Mandatory parameters -->
+<!-- SET ONLY k_search OR radius search, NOT BOTH -->
+<!-- k_search: 0 -->
+      <!-- k_search: 50 -->
+<!-- radius_search: 0.015 -->
+<!-- radius_search: 0.515 -->
+      <!-- radius_search: 0 -->
+<!-- # Set the spatial locator. Possible values are: 0 (ANN), 1 (FLANN), 2 (organized) -->
+<!-- FLANN = Fast Library for Approximate Nearest Neighbors -->
+<!-- spatial_locator: 0 -->
+      <!-- spatial_locator: 1
+      use_sim_time: true
     </rosparam>
-  </node>
+  </node> -->
 
 
   <!-- Segment the table plane -->
