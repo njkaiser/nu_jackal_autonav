@@ -204,23 +204,31 @@ public:
 
     // calculate ground plane triax
     // std::cout << floor_coefficients.values[0] << std::endl;
-    std::cout << floor_coefficients->values[0] << std::endl;
     // std::cout << *floor_coefficients << std::endl;
-    // float nx = floor_coefficients.values[0];
-    // float ny = floor_coefficients.values[1];
-    // float nz = floor_coefficients.values[2];
-    // float d = floor_coefficients.values[3];
+    if(floor_coefficients->values.size())
+    {
+      // std::cout << *floor_coefficients << std::endl;
+      // std::cout << floor_coefficients->values[0] << std::endl;
+      float nx = floor_coefficients->values[0];
+      float ny = floor_coefficients->values[1];
+      float nz = floor_coefficients->values[2];
+      float d = floor_coefficients->values[3];
 
-    // float roll = atan2(nz, nx);
-    float roll = 0;
-    // float pitch = atan2(nz, ny);
-    float pitch = 0;
+      float roll = atan2(nz, ny) + 1.57079; // 90 deg offset
+      // float roll = 0;
+      float pitch = atan2(nz, nx) + 1.57079; // 90 deg offset
+      // float pitch = 0;
 
-    q.setRPY(roll, pitch, 0);
+      q.setRPY(roll, pitch, 1.57079); // 90 deg offset
 
-    floor_frame_tf.setOrigin(tf::Vector3(-0.12, 0.0, -0.338));
-    floor_frame_tf.setRotation(q);
-    br.sendTransform(tf::StampedTransform(floor_frame_tf, ros::Time::now(), "velodyne", "floor_estimate"));
+      floor_frame_tf.setOrigin(tf::Vector3(-0.12, 0.0, -0.338));
+      floor_frame_tf.setRotation(q);
+      br.sendTransform(tf::StampedTransform(floor_frame_tf, ros::Time::now(), "velodyne", "floor_estimate"));
+    }
+    else
+    {
+      std::cout << "model coefficients are empty" << std::endl;
+    }
   }
 
 }; // END OF Floor_Estimater CLASS

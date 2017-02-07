@@ -18,13 +18,20 @@ int main (int argc, char** argv)
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = "odom"; // matches published msgs
     msg.child_frame_id = "base_link"; // matches published msgs
-    
+
     msg.pose.pose.position.z = 0;
     // BELOW IS WRONG, HEADING WOUDLN'T CHANGE IF WE SET q = < 0, 0, 0, 1 >
     // msg.pose.pose.orientation.x = 0;
     // msg.pose.pose.orientation.y = 0;
     // msg.pose.pose.orientation.z = 0;
     // msg.pose.pose.orientation.w = 1;
+
+
+// NEED TO SET tf DATA AS WELL
+// CAN'T PUBLISH OVER TOP OF ORIGINAL ODOM MESSAGE
+// SO WILL NEED TO CREATE odom_corrected OR SOMETHING LIKE THAT
+// LOOK AT AMCL PAGE, IT'S DOING THIS EXACT SAME THING
+
 
     pub.publish(msg);
     rate.sleep();
