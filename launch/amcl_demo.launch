@@ -1,8 +1,8 @@
 <launch>
 
-  <!-- Run the map server -->
  <arg name="map_file" default="$(find winter_project)/maps/tutorial_map.yaml"/>
- 
+
+ <!-- Run the map server -->
  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!--- Run AMCL -->
