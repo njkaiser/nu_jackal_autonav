@@ -1,10 +1,146 @@
 <launch>
-  <node pkg="semantic_point_annotator" type="sac_inc_ground_removal_node" name="sac_ground_removal" > <!-- machine="c2" > -->
-    <remap from="tilt_laser_cloud_filtered" to="tilt_scan_filtered" />
-    <remap from="cloud_ground_filtered" to="ground_object_cloud" />
-    <param name="z_threshold" value="0.15" />
-    <param name="sac_min_points_per_model" value="40" />
-    <param name="sac_distance_threshold" value="0.05" />
-    <param name="planar_refine" value="1" />
+
+  <arg name="xy_range" value="4.0" />
+  <arg name="z_range" value="0.1" />
+  <arg name="x_offset" value="0.12" />
+  <arg name="y_offset" value="0.0" />
+  <arg name="z_offset" value="0.338" />
+
+  <!-- START NODELET MANAGER -->
+  <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
+
+  <!-- FILTER OUT POINTS NOT NEAR GROUND LEVEL -->
+  <node pkg="nodelet" type="nodelet" name="cropbox_filter" args="load pcl/CropBox pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points" />
+    <remap from="~output" to="/velodyne_points/cropbox" />
+    <rosparam>
+<!-- min_x: "$(eval -4.0 - arg('x_offset'))"
+max_x: "$(eval 4.0 - arg('x_offset'))"
+min_y: "$(eval -4.0 - arg('y_offset'))"
+max_y: "$(eval 4.0 - arg('y_offset'))"
+min_z: "$(eval -0.1 - arg('z_offset'))"
+max_z: "$(eval 0.1 - arg('z_offset'))" -->
+<!-- HARDCODED BELOW VALUES IN, ARGS WEREN'T WORKING FOR SOME REASON -->
+<!-- TO CLARIFY, THEY WORKED, BUT THE LIMITS CLEARLY WERE WRONG -->
+<!-- DIDN'T FEEL LIKE TROUBLESHOOTING AT THE MOMENT -->
+
+      min_x: -4.12
+      max_x: 3.88
+      min_y: -4.0
+      max_y: 4.0
+      min_z: -0.438
+      max_z: -0.238
+
+<!-- min_x: -4.0
+max_x: 4.0
+min_y: -4.0
+max_y: 4.0
+min_z: -0.1
+max_z: 0.1 -->
+    </rosparam>
   </node>
+
+
+  <!-- Run a StatisticalOutlierRemoval filter -->
+  <node pkg="nodelet" type="nodelet" name="outlier_removal" args="load
+    pcl/StatisticalOutlierRemoval pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/cropbox" />
+    <remap from="~output" to="/velodyne_points/rmvd_outliers" />
+    <rosparam>
+      mean_k: 30
+      stddev: 0.8
+      negative: False
+    </rosparam>
+  </node>
+
+
+  <!-- Run a VoxelGrid filter to clean NaNs and downsample the data -->
+  <node pkg="nodelet" type="nodelet" name="voxel" args="load pcl/VoxelGrid pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/rmvd_outliers" />
+    <remap from="~output" to="/velodyne_points/voxeled" />
+    <rosparam>
+<!-- NOT SURE I NEED THESE PARAMATERS SINCE I'VE ALREADY PASSED DATA THROUGH A CROPBOX FILTER - WORRY ABOUT THIS LATER -->
+      filter_field_name: z
+      filter_limit_min: -0.438
+      filter_limit_max: -0.238
+      filter_limit_negative: False
+<!-- leaf_size: 0.01 -->
+      leaf_size: [0.015, 0.015, 0.015]
+<!-- output_frame: /oriented_optimization_frame -->
+    </rosparam>
+  </node>
+
+
+  <!-- Estimate point normals -->
+  <!-- <node pkg="nodelet" type="nodelet" name="normal_estimation" args="load pcl/NormalEstimation pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/voxeled" /> -->
+<!-- AS SOON AS I TRY TO SUBSCRIBE TO (rostopic echo) THIS TOPIC,    -->
+<!-- THE pcl_manager NODELET DIES... WTF?!?!?!?!? -->
+    <!-- <remap from="~output" to="/TEST" />
+    <rosparam> -->
+<!-- # -[ Mandatory parameters -->
+<!-- SET ONLY k_search OR radius search, NOT BOTH -->
+<!-- k_search: 0 -->
+      <!-- k_search: 50 -->
+<!-- radius_search: 0.015 -->
+<!-- radius_search: 0.515 -->
+      <!-- radius_search: 0 -->
+<!-- # Set the spatial locator. Possible values are: 0 (ANN), 1 (FLANN), 2 (organized) -->
+<!-- FLANN = Fast Library for Approximate Nearest Neighbors -->
+<!-- spatial_locator: 0 -->
+      <!-- spatial_locator: 1
+      use_sim_time: true
+    </rosparam>
+  </node> -->
+
+
+  <!-- Segment the table plane -->
+  <!-- <node pkg="nodelet" type="nodelet" name="planar_segmentation" args="load pcl/SACSegmentationFromNormals pcl_manager" output="screen">
+    <remap from="~input" to="/velodyne_points/voxeled" />
+    <remap from="~normals" to="/normal_estimation/output" />
+    <rosparam> -->
+      <!-- # -[ Mandatory parameters
+      # model_type:
+      # 0: SACMODEL_PLANE
+      # 1: SACMODEL_LINE
+      # 2: SACMODEL_CIRCLE2D
+      # 3: SACMODEL_CIRCLE3D
+      # 4: SACMODEL_SPHERE
+      # 5: SACMODEL_CYLINDER
+      # 6: SACMODEL_CONE
+      # 7: SACMODEL_TORUS
+      # 8: SACMODEL_PARALLEL_LINE
+      # 9: SACMODEL_PERPENDICULAR_PLANE
+      # 10: SACMODEL_PARALLEL_LINES
+      # 11: SACMODEL_NORMAL_PLANE
+      # 12: SACMODEL_NORMAL_SPHERE
+      # 13: SACMODEL_REGISTRATION
+      # 14: SACMODEL_REGISTRATION_2D
+      # 15: SACMODEL_PARALLEL_PLANE
+      # 16: SACMODEL_NORMAL_PARALLEL_PLANE
+      # 17: SACMODEL_STICK -->
+      <!-- model_type: 11 -->
+      <!-- distance_threshold: 0.1 -->
+      <!-- distance_threshold: 0.02 -->
+      <!-- max_iterations: 1000 -->
+      <!-- max_iterations: 300
+      method_type: 0
+      optimize_coefficients: true
+      normal_distance_weight: 0.1 -->
+      <!-- eps_angle: 0.09 -->
+      <!-- 0.09 rad = ~5 degrees -->
+    <!-- </rosparam>
+  </node> -->
+
+
+  <!-- IDK WHAT THIS EVEN DOES, BUT I LIKE IT -->
+  <!-- <node pkg="nodelet" type="nodelet" name="extract_plane_indices" args="load pcl/ExtractIndices pcl_manager" output="screen">
+    <remap from="~input"   to="/velodyne_points/voxeled" />
+    <remap from="~indices" to="/planar_segmentation/inliers" />
+    <rosparam>
+      negative: true
+    </rosparam>
+  </node> -->
+
+
 </launch>
