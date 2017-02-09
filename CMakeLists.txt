@@ -220,7 +220,6 @@ add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
 #link_libraries(${OCTOMAP_LIBRARIES})
 
 
-
 include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )
 add_executable(ground_plane src/ground_plane.cpp)
 add_definitions(${PCL_DEFINITIONS})
@@ -233,6 +232,7 @@ add_executable(floor_finder src/floor_finder.cpp)
 # add_definitions(${PCL_DEFINITIONS})
 target_link_libraries(floor_finder ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
 add_dependencies(floor_finder ${catkin_EXPORTED_TARGETS} floor_finder)
+
 
 add_executable(ground_plane_cheat src/ground_plane_cheat.cpp)
 target_link_libraries(ground_plane_cheat ${catkin_LIBRARIES})

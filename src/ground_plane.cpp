@@ -59,7 +59,6 @@ void ring_filter(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud)
   // I MAKE MY OWN FILTER OR FIGURE OUT HOW TO FILTER BY RING SOME OTHER WAY...
 
   pass.filter(*cloud);
-  std::cout << "FUCK THIS SHIT " << cloud->header << std::endl;
 }
 
 

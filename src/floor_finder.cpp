@@ -1,6 +1,5 @@
-// NODE TAKEN FROM pcl_495 PACKAGE:
+// ROUGH OUTLINE BORROWED FROM RITWICK'S pcl_495 PACKAGE:
 // https://github.com/ritwik1993/pcl_495/blob/master/src/pcl_node_w_nodelets.cpp
-// todo: I have no idea what I'm doing with this
 
 #include <ros/ros.h>
 
@@ -46,14 +45,6 @@
 #include <cmath>
 
 
-// ros::init(argc, argv, "pcl_node_w_nodelets");
-// ros::NodeHandle nh;
-// ros::Publisher pub;
-// ros::Publisher pub_obj;
-// tf::TransformBroadcaster br;
-// tf::Transform transform;
-
-
 
 class Floor_Estimater
 {
@@ -69,47 +60,37 @@ private:
   tf::Transform floor_frame_tf;
   tf::Quaternion q;
 
-  // these need to be available to multiple functions
-  // pcl::ModelCoefficients::Ptr Floor_Estimater::floor_coefficients(new pcl::ModelCoefficients());
-  // pcl::PointIndices::Ptr floor_indices;
+  // these need to be available to multiple methods
   pcl::ModelCoefficients::Ptr floor_coefficients;
 
 
 public:
   Floor_Estimater()
   {
-    // std::cout << "initializing Floor_Estimater class object" << std::endl;
-
-    // create a ROS publisher for the output point cloud
+    // create publisher for output point cloud
     pub = nh.advertise<sensor_msgs::PointCloud2>("output", 1);
     // pub_obj = nh.advertise<sensor_msgs::PointCloud2> ("objects", 1);
 
-    // create a ROS subscriber for the input point cloud
+    // subscribe to input point cloud
     sub = nh.subscribe("/velodyne_points/voxeled", 1, &Floor_Estimater::cloud_cb, this);
 
     // callback to publish ground plane estimate
     tmr = nh.createTimer(ros::Duration(0.02), &Floor_Estimater::tf_cb, this); // 50 hz to match the rest of the tf tree
 
-    // initialize with best guess for floor location
-    floor_frame_tf.setOrigin(tf::Vector3(-0.12, 0.0, -0.338));
-    floor_frame_tf.setRotation(tf::Quaternion(0, 0, 0, 1));
-
     floor_coefficients = pcl::ModelCoefficients::Ptr(new pcl::ModelCoefficients());
-
-    // std::cout << "Floor_Estimater class object initialized" << std::endl;
   }
 
+
+private:
   void ransac(const sensor_msgs::PointCloud2ConstPtr& input, pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_projected)
   {
     // std::cout << "entered ransac() function" << std::endl;
 
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::PointIndices::Ptr floor_indices(new pcl::PointIndices());
-    // pcl::ModelCoefficients::Ptr floor_coefficients(new pcl::ModelCoefficients());
     pcl::fromROSMsg(*input, *cloud);
 
     pcl::SACSegmentation<pcl::PointXYZI> floor_finder;
-
     floor_finder.setOptimizeCoefficients(true);
     // floor_finder.setModelType(pcl::SACMODEL_PARALLEL_PLANE);
     // floor_finder.setModelType(pcl::SACMODEL_NORMAL_PLANE);
@@ -121,9 +102,7 @@ public:
     floor_finder.setEpsAngle(0.174); // 0.174 rad ~= 10 degrees
     floor_finder.setInputCloud(boost::make_shared<pcl::PointCloud<pcl::PointXYZI> >(*cloud));
     floor_finder.segment(*floor_indices, *floor_coefficients);
-    // floor_finder.segment(*floor_indices, floor_coefficients);
     std::cout << *floor_coefficients << std::endl;
-    // std::cout << floor_coefficients << std::endl;
 
 
     // if (floor_indices->indices.size() > 0)
@@ -203,22 +182,15 @@ public:
     // std::cout << "entered tf callback" << std::endl;
 
     // calculate ground plane triax
-    // std::cout << floor_coefficients.values[0] << std::endl;
-    // std::cout << *floor_coefficients << std::endl;
     if(floor_coefficients->values.size())
     {
-      // std::cout << *floor_coefficients << std::endl;
-      // std::cout << floor_coefficients->values[0] << std::endl;
       float nx = floor_coefficients->values[0];
       float ny = floor_coefficients->values[1];
       float nz = floor_coefficients->values[2];
       float d = floor_coefficients->values[3];
 
       float roll = atan2(nz, ny) + 1.57079; // 90 deg offset
-      // float roll = 0;
       float pitch = atan2(nz, nx) + 1.57079; // 90 deg offset
-      // float pitch = 0;
-
       q.setRPY(roll, pitch, 1.57079); // 90 deg offset
 
       floor_frame_tf.setOrigin(tf::Vector3(-0.12, 0.0, -0.338));
@@ -227,7 +199,7 @@ public:
     }
     else
     {
-      std::cout << "model coefficients are empty" << std::endl;
+      std::cout << "WARNING: Ground plane model coefficient array is empty (FILE = floor_finder.cpp)" << std::endl;
     }
   }
 
