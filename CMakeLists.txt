@@ -234,4 +234,6 @@ add_executable(floor_finder src/floor_finder.cpp)
 target_link_libraries(floor_finder ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
 add_dependencies(floor_finder ${catkin_EXPORTED_TARGETS} floor_finder)
 
-# add_executable(ground_plane_cheat src/ground_plane_cheat.cpp)
+add_executable(ground_plane_cheat src/ground_plane_cheat.cpp)
+target_link_libraries(ground_plane_cheat ${catkin_LIBRARIES})
+add_dependencies(ground_plane_cheat ${catkin_EXPORTED_TARGETS} ground_plane_cheat)
