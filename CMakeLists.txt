@@ -209,22 +209,22 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-pkg_check_modules( ncurses++ REQUIRED ncurses++ )
-add_executable(keyboard_control src/keyboard_control.cpp)
-target_link_libraries(keyboard_control ${catkin_LIBRARIES} ncurses)
-target_link_libraries(keyboard_control ${ncurses++_LIBRARIES})
-add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
+# pkg_check_modules( ncurses++ REQUIRED ncurses++ )
+# add_executable(keyboard_control src/keyboard_control.cpp)
+# target_link_libraries(keyboard_control ${catkin_LIBRARIES} ncurses)
+# target_link_libraries(keyboard_control ${ncurses++_LIBRARIES})
+# add_dependencies(keyboard_control ${catkin_EXPORTED_TARGETS} keyboard_control)
 
 
 #include_directories(${OCTOMAP_INCLUDE_DIRS})
 #link_libraries(${OCTOMAP_LIBRARIES})
 
 
-include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )
-add_executable(ground_plane src/ground_plane.cpp)
-add_definitions(${PCL_DEFINITIONS})
-target_link_libraries(ground_plane ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
-add_dependencies(ground_plane ${catkin_EXPORTED_TARGETS} ground_plane)
+#include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )
+#add_executable(ground_plane src/ground_plane.cpp)
+#add_definitions(${PCL_DEFINITIONS})
+#target_link_libraries(ground_plane ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
+#add_dependencies(ground_plane ${catkin_EXPORTED_TARGETS} ground_plane)
 
 
 # include_directories(  ${catkin_INCLUDE_DIRS}  ${PCL_INCLUDE_DIRS} )

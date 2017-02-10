@@ -143,4 +143,7 @@ max_z: 0.1 -->
   </node> -->
 
 
+  <!-- start node hack to eliminate z-offset drift between odom and base_link -->
+  <node pkg="winter_project" type="ground_plane_cheat" name="ground_plane_cheat" output="screen" />
+
 </launch>

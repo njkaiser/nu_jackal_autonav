@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
-
+#include <tf/transform_listener.h>
 
 
 class GroundPlaneCheat
@@ -18,8 +18,13 @@ private:
   tf::Transform new_tf;
   tf::Quaternion q;
 
+  // and now for tf listen
+  tf::TransformListener listener;
+  tf::StampedTransform tf_in;
+
   // set up stuff for corrected odom message
   nav_msgs::Odometry odom_corrected;
+  float z_offset;
 
 
 public:
@@ -29,21 +34,17 @@ public:
     pub = nh.advertise<nav_msgs::Odometry>("/odometry/corrected", 1);
 
     // subscribe to virgin odom message
-    sub = nh.subscribe("/odometry/filtered", 1, &GroundPlaneCheat::odom_cb, this);
+    sub = nh.subscribe("/odometry/filtered", 1, &GroundPlaneCheat::topic_cb, this);
 
     // callback to publish tf data at constant rate
     tmr = nh.createTimer(ros::Duration(0.02), &GroundPlaneCheat::tf_cb, this); // 50 hz to match the rest of the tf tree
-  }
+  } // END OF CONSTRUCTOR
 
 
 private:
-  void odom_cb(const nav_msgs::Odometry::ConstPtr& input)
+  void topic_cb(const nav_msgs::Odometry::ConstPtr& input)
   {
     // std::cout << "entered odometry callback" << std::endl;
-
-    // CAN'T PUBLISH OVER TOP OF ORIGINAL ODOM MESSAGE
-    // SO WILL NEED TO CREATE odom_corrected OR SOMETHING LIKE THAT
-    // LOOK AT AMCL PAGE, IT'S DOING THIS EXACT SAME THING
 
     odom_corrected = *input;
     // msg.header.frame_id = "odom"; // matches published msgs
@@ -53,20 +54,32 @@ private:
     odom_corrected.pose.pose.position.z = 0;
 
     pub.publish(odom_corrected);
-  }
+  } // END OF topic_cb() FUNCTION
 
 
   void tf_cb(const ros::TimerEvent& event)
   {
-    // set up the transform
+    // grab z offset so we can correct it
+    try
+    { listener.lookupTransform("/odom", "/base_link", ros::Time(0), tf_in); }
+    catch (tf::TransformException ex)
+    {
+      // ROS_ERROR("%s", ex.what());
+      ROS_WARN("%s", ex.what());
+      ros::Duration(1.0).sleep();
+    }
+
+    // z_offset = tf_in.transform.translation.z;
+    z_offset = tf_in.getOrigin().z();
+
+    // set up the transform variables
     q.setRPY(0, 0, 0);
-    new_tf.setOrigin(tf::Vector3(0, 0, 0));
+    new_tf.setOrigin(tf::Vector3(0, 0, z_offset));
     new_tf.setRotation(q);
 
     //send the transform
-    // br.sendTransform(tf::StampedTransform(new_tf, ros::Time::now(), "odom_corrected", "base_link"));
     br.sendTransform(tf::StampedTransform(new_tf, ros::Time::now(), "odom", "odom_corrected"));
-  }
+  } // END OF tf_cb() FUNCTION
 
 }; // END OF GroundPlaneCheat CLASS
 
@@ -78,7 +91,6 @@ int main (int argc, char** argv)
 
   GroundPlaneCheat gpc_ftw;
 
-  // sit and:
   ros::spin();
   return 0;
-}
+} // END OF main() FUNCTION
