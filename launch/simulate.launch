@@ -1,15 +1,17 @@
 <launch>
+
   <!-- <arg name="config" default="winter_project"/> -->
+  <arg name="gui" default="false"/>
+  <arg name="headless" default="true"/>
+  <arg name="scene" default="$(find jackal_gazebo)/worlds/jackal_race.world" />
 
   <!-- start gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="debug" value="0" />
-    <!-- <arg name="gui" value="true" /> -->
-    <arg name="gui" value="false" />
+    <!-- <arg name="debug" value="0" /> -->
+    <arg name="gui" value="$(arg gui)" />
     <arg name="use_sim_time" value="true" />
-    <arg name="headless" value="true" />
-    <!-- <arg name="headless" value="false" /> -->
-    <arg name="world_name" value="$(find jackal_gazebo)/worlds/jackal_race.world" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="world_name" value="$(arg scene)" />
   </include>
 
   <!-- load URDF of custom jackal configuration -->

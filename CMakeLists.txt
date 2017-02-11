@@ -33,6 +33,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(PCL REQUIRED)
 find_package(PkgConfig REQUIRED)
 
+
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
@@ -136,6 +137,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${GAZEBO_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -237,3 +239,9 @@ add_dependencies(floor_finder ${catkin_EXPORTED_TARGETS} floor_finder)
 add_executable(ground_plane_cheat src/ground_plane_cheat.cpp)
 target_link_libraries(ground_plane_cheat ${catkin_LIBRARIES})
 add_dependencies(ground_plane_cheat ${catkin_EXPORTED_TARGETS} ground_plane_cheat)
+
+#include_directories(${GAZEBO_INCLUDE_DIRS})
+#link_directories(${GAZEBO_LIBRARY_DIRS})
+#add_executable(respawn_robot src/respawn_robot.cpp)
+#target_link_libraries(respawn_robot ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+#add_dependencies(respawn_robot ${catkin_EXPORTED_TARGETS} respawn_robot)
