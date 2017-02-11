@@ -1,8 +1,8 @@
 <launch>
 
   <arg name="use_map_topic" default="false"/>
-  <arg name="scan_topic" default="front/scan" />
-  <!-- <arg name="scan_topic" default="velodyne_points" /> -->
+  <!-- <arg name="scan_topic" default="front/scan" /> -->
+  <arg name="scan_topic" default="emulated_scan" />
 
   <node pkg="amcl" type="amcl" name="amcl">
     <param name="use_map_topic" value="$(arg use_map_topic)"/>

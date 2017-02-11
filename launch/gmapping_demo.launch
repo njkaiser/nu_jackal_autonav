@@ -1,5 +1,8 @@
 <launch>
 
+  <!-- LaserScan topic required for gmapping -->
+  <include file="$(find winter_project)/launch/pointcloud_to_laserscan.launch" />
+
   <!--- Run gmapping -->
   <include file="$(find winter_project)/launch/include/gmapping.launch" />
 

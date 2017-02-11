@@ -3,7 +3,6 @@
   <!-- ADDED THIS IN TO INCREASE CODE REUSE -->
   <!-- NOW I CAN INCLUDE THIS LAUNCH FILE FROM odom_navigation_demo.launch -->
   <!-- AND JUST PASS IN THE CORRECT ARGUMENTS -->
-  
   <arg name="local_costmap_dir" default="params/map_nav_params/local_costmap_params.yaml"/>
   <arg name="global_costmap_dir" default="params/map_nav_params/global_costmap_params.yaml"/>
 
@@ -17,6 +16,7 @@
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
     <remap from="odom" to="odometry/filtered" />
+    <!-- <remap from="odom" to="odometry_corrected" /> -->
   </node>
 
 </launch>
