@@ -37,6 +37,7 @@ public:
     sub = nh.subscribe("/odometry/filtered", 1, &GroundPlaneCheat::topic_cb, this);
 
     // callback to publish tf data at constant rate
+    listener.waitForTransform("/odom", "/base_link", ros::Time::now(), ros::Duration(3.0));
     tmr = nh.createTimer(ros::Duration(0.02), &GroundPlaneCheat::tf_cb, this); // 50 hz to match the rest of the tf tree
   } // END OF CONSTRUCTOR
 
