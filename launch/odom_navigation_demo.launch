@@ -1,6 +1,6 @@
 <launch>
 
-  <!-- <include file="$(find winter_project)/launch/pointcloud_to_laserscan.launch" /> -->
+  <include file="$(find winter_project)/launch/pointcloud_to_laserscan.launch" />
 
   <include file="$(find winter_project)/launch/include/move_base.launch">
     <arg name="local_costmap_dir" value="params/odom_nav_params/local_costmap_params.yaml" />
