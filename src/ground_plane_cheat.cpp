@@ -2,6 +2,8 @@
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
+#include <iostream>
+
 
 
 class GroundPlaneCheat
@@ -30,15 +32,23 @@ private:
 public:
   GroundPlaneCheat() // constructor
   {
+    // I don't like empty terminal screens
+    std::cout << "setting up ground plane correction node...\n" << std::flush;
+
     // create publisher for corrected odometry nav messages
     pub = nh.advertise<nav_msgs::Odometry>("/odometry/corrected", 1);
 
     // subscribe to virgin odom message
     sub = nh.subscribe("/odometry/filtered", 1, &GroundPlaneCheat::topic_cb, this);
 
-    // callback to publish tf data at constant rate
+    // need odom to base_link tf info so we can cancel out the z
+    std::cout << "waiting for transform from /odom to /base_link...\n" << std::flush;
     listener.waitForTransform("/odom", "/base_link", ros::Time::now(), ros::Duration(3.0));
+
+    // callback to publish tf data at constant rate
     tmr = nh.createTimer(ros::Duration(0.02), &GroundPlaneCheat::tf_cb, this); // 50 hz to match the rest of the tf tree
+
+    std::cout << "... done!\n" << std::flush;
   } // END OF CONSTRUCTOR
 
 
