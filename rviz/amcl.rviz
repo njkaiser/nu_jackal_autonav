@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Velodyne Points1
       Splitter Ratio: 0.641667
     Tree Height: 742
   - Class: rviz/Selection
@@ -189,8 +188,8 @@ Visualization Manager:
     - Alpha: 0.8
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.00744
-        Min Value: -0.109231
+        Max Value: 1.53099
+        Min Value: -0.109858
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -414,15 +413,23 @@ Visualization Manager:
       Axes Length: 1
       Axes Radius: 0.1
       Class: rviz/Pose
-      Color: 255; 25; 0
+      Color: 255; 85; 255
       Enabled: true
-      Head Length: 0.3
-      Head Radius: 0.1
+      Head Length: 0.2
+      Head Radius: 0.15
       Name: Goal Pose
-      Shaft Length: 1
-      Shaft Radius: 0.05
+      Shaft Length: 0.2
+      Shaft Radius: 0.1
       Shape: Arrow
       Topic: /move_base_simple/goal
+      Unreliable: false
+      Value: true
+    - Arrow Length: 0.3
+      Class: rviz/PoseArray
+      Color: 190; 190; 190
+      Enabled: true
+      Name: Particle Filter
+      Topic: /particlecloud
       Unreliable: false
       Value: true
   Enabled: true
@@ -445,22 +452,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 18.9638
+      Distance: 4.02402
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.15476
-        Y: -6.86519
-        Z: 1.5098
+        X: -3.45451
+        Y: -1.89253
+        Z: -0.297334
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.584799
+      Pitch: 0.969799
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.4919
+      Yaw: 4.32692
     Saved: ~
 Window Geometry:
   Camera Feed:

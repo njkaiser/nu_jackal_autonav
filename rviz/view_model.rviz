@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Velodyne Points1
       Splitter Ratio: 0.641667
     Tree Height: 742
   - Class: rviz/Selection
@@ -26,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Velodyne Points
+    SyncSource: costmap points
 Visualization Manager:
   Class: ""
   Displays:
@@ -186,17 +185,17 @@ Visualization Manager:
       Show Visual Aids: false
       Update Topic: /twist_marker_server/update
       Value: true
-    - Alpha: 0.8
+    - Alpha: 0.5
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.58009
-        Min Value: -0.112255
+        Max Value: 2.634
+        Min Value: -0.827368
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 255; 255; 255
-      Color Transformer: AxisColor
+      Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -208,7 +207,7 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 1
       Selectable: false
-      Size (Pixels): 2
+      Size (Pixels): 1
       Size (m): 0.01
       Style: Points
       Topic: /velodyne_points
@@ -219,8 +218,38 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.339689
-        Min Value: 0.334078
+        Max Value: 0.45962
+        Min Value: 0.0453404
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 103
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: costmap points
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.01
+      Style: Points
+      Topic: /velodyne_points/for_costmap
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.395686
+        Min Value: 0.0563048
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -249,21 +278,21 @@ Visualization Manager:
     - Alpha: 0.8
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.101161
-        Min Value: -0.0672687
+        Max Value: 0.131514
+        Min Value: -0.120369
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 255; 255; 255
-      Color Transformer: AxisColor
+      Color Transformer: Intensity
       Decay Time: 0
       Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 999999
+      Max Intensity: 100
       Min Color: 0; 0; 0
-      Min Intensity: 0
+      Min Intensity: 1
       Name: floor cropboxed
       Position Transformer: XYZ
       Queue Size: 1
@@ -271,7 +300,7 @@ Visualization Manager:
       Size (Pixels): 2
       Size (m): 0.01
       Style: Points
-      Topic: /velodyne_points/cropbox
+      Topic: /velodyne_points/floor_cropbox
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -279,21 +308,21 @@ Visualization Manager:
     - Alpha: 0.2
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
+        Max Value: 0.196171
+        Min Value: -0.126291
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 255; 255; 255
-      Color Transformer: FlatColor
+      Color Transformer: Intensity
       Decay Time: 0
       Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 999999
+      Max Intensity: 94
       Min Color: 0; 0; 0
-      Min Intensity: 0
+      Min Intensity: 1
       Name: floor outliers removed
       Position Transformer: XYZ
       Queue Size: 10
@@ -301,7 +330,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.01
       Style: Flat Squares
-      Topic: /velodyne_points/rmvd_outliers
+      Topic: /velodyne_points/floor_no_outliers
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -445,22 +474,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10.819
+      Distance: 13.5288
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.63927
-        Y: 0.635477
-        Z: -0.681636
+        X: 2.69815
+        Y: 6.04082
+        Z: 0.111594
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.819799
+      Pitch: 0.409796
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.74189
+      Yaw: 4.14369
     Saved: ~
 Window Geometry:
   Camera Feed:
@@ -480,5 +509,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1920
-  X: 0
+  X: 1920
   Y: 24
