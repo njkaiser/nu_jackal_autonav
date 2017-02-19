@@ -168,11 +168,11 @@ max_z: 0.1 -->
     <remap from="~output" to="/velodyne_points/no_outliers" />
     <rosparam>
       radius_search: 0.05 # Must have min_neighbors w/in this radius to survive
-      min_neighbors: 2
+      min_neighbors: 3
     </rosparam>
   </node>
 
-  <!-- downsample and clean NaNs, then output as for_costmap -->
+  <!-- downsample and clean NaNs, then output for costmap -->
   <node pkg="nodelet" type="nodelet" name="voxel" args="load pcl/VoxelGrid pcl_manager" output="screen">
     <remap from="~input" to="/velodyne_points/no_outliers" />
     <remap from="~output" to="/velodyne_points/voxeled" />

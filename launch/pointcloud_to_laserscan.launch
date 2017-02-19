@@ -4,7 +4,7 @@
   <!-- IF TIME, IMPLEMENT AS NODELET AND COMPARE EFFICIENCY  -->
   <!-- http://wiki.ros.org/pointcloud_to_laserscan -->
   <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
-    <remap from="cloud_in" to="/velodyne_points"/>
+    <remap from="cloud_in" to="/velodyne_points/for_costmap"/>
     <remap from="scan" to="emulated_scan"/>
     <rosparam>
       max_height: 0.4

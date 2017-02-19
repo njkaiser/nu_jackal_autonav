@@ -1,46 +1,10 @@
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
-
-
-// INCLUDES I MIGHT NEED:
-#include <sensor_msgs/point_cloud2_iterator.h>
-#include <boost/make_shared.hpp>
-#include <pcl_conversions/pcl_conversions.h>
-#include <pcl_ros/point_cloud.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-
-
-// INCLUDES I SHOULDN'T NEED:
-#include <tf/transform_broadcaster.h>
-#include <boost/thread/thread.hpp>
-#include <pcl/features/normal_3d.h>
-#include <pcl/kdtree/kdtree.h>
-#include <pcl/segmentation/extract_clusters.h>
-#include <pcl/filters/crop_box.h>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/filters/project_inliers.h>
-#include <pcl/filters/statistical_outlier_removal.h>
-#include <pcl/filters/passthrough.h>
-#include <pcl/Vertices.h>
-#include <pcl/segmentation/sac_segmentation.h>
-#include <pcl/segmentation/conditional_euclidean_clustering.h>
-#include <pcl/segmentation/impl/conditional_euclidean_clustering.hpp>
-#include <pcl/filters/extract_indices.h>
-#include <pcl/sample_consensus/ransac.h>
-#include <pcl/sample_consensus/sac_model_plane.h>
-#include <pcl/sample_consensus/model_types.h>
-#include <pcl/sample_consensus/method_types.h>
-#include <pcl/ModelCoefficients.h>
-#include <pcl/surface/mls.h>
-#include <pcl/surface/concave_hull.h>
-
-// ALSO, DON'T FORGET TO REMOVE PCL DEPENDENCY IN CMAKELISTS, SINCE NO LONGER USE IT
-
+// #include <boost/make_shared.hpp>
 
 // field offsets for velodyne_points::PointXYZIR data type
 // see message prototype (fields section) for offset values
-#define XSTART 0
+#define XSTART 0 // x starts at beginning of each message
 #define YSTART 1 //* 4 bytes for a float =  4 byte offset
 #define ZSTART 2 //* 4 bytes for a float =  8 byte offset
 #define ISTART 4 //* 4 bytes for a float = 16 byte offset
@@ -49,16 +13,15 @@
 
 // don't waste CPU calculating angle each time
 // #define TAN1 0.01745506492
-// #define TAN1_5 0.02618592156
-#define TAN2 0.03492076949
+#define TAN1_5 0.02618592156
+// #define TAN2 0.03492076949
 // #define TAN3 0.05240777928
 // #define TAN20 0.36397023426 // excessive to verify it's working
 
 #define ZOFFSET 0.338 // fixed offset from Velodyne frame to ground
 
 
-// INLINE THIS???
-float radial_dist(float & x, float & y)
+inline float radial_dist(float & x, float & y)
   { return sqrt(pow(x,2) + pow(y, 2)); }
 
 
@@ -125,7 +88,7 @@ private:
       y = *(current_address + YSTART);
       z = *(current_address + ZSTART) + ZOFFSET;
 
-      if(z > radial_dist(x, y) * TAN2)
+      if(z > radial_dist(x, y) * TAN1_5)
       {
         for(int j = 0; j < PT_LEN; ++j)
         {

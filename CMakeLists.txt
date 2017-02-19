@@ -247,5 +247,5 @@ add_dependencies(ground_plane_cheat ${catkin_EXPORTED_TARGETS} ground_plane_chea
 #add_dependencies(respawn_robot ${catkin_EXPORTED_TARGETS} respawn_robot)
 
 add_executable(conical_filter src/conical_filter.cpp)
-target_link_libraries(conical_filter ${catkin_LIBRARIES} ${PCL_LIBRARY_DIRS})
+target_link_libraries(conical_filter ${catkin_LIBRARIES})
 add_dependencies(conical_filter ${catkin_EXPORTED_TARGETS} conical_filter)

@@ -6,7 +6,11 @@
  <include file="$(find winter_project)/launch/pointcloud_to_laserscan.launch" />
 
  <!-- Run the map server -->
- <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+ <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+  <!-- <rosparam>
+    frame_id: odom_corrected #default is "map"
+  </rosparam> -->
+ </node>
 
   <!--- Run AMCL -->
  <include file="$(find winter_project)/launch/include/amcl.launch" />
