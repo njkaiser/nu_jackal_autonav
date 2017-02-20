@@ -89,7 +89,7 @@ private:
     new_tf.setRotation(q);
 
     //send the transform
-    br.sendTransform(tf::StampedTransform(new_tf, ros::Time::now(), "odom", "odom_corrected"));
+    br.sendTransform(tf::StampedTransform(new_tf, ros::Time::now(), "odom_corrected", "odom"));
   } // END OF tf_cb() FUNCTION
 
 }; // END OF GroundPlaneCheat CLASS
