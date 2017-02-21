@@ -85,7 +85,7 @@ private:
 
     // set up the transform variables
     q.setRPY(0, 0, 0);
-    new_tf.setOrigin(tf::Vector3(0, 0, z_offset));
+    new_tf.setOrigin(tf::Vector3(0, 0, -z_offset));
     new_tf.setRotation(q);
 
     //send the transform

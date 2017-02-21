@@ -1,6 +1,5 @@
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
-// #include <boost/make_shared.hpp>
 
 // field offsets for velodyne_points::PointXYZIR data type
 // see message prototype (fields section) for offset values
@@ -15,15 +14,12 @@
 // #define TAN1 0.01745506492
 #define TAN1_5 0.02618592156
 // #define TAN2 0.03492076949
-// #define TAN3 0.05240777928
-// #define TAN20 0.36397023426 // excessive to verify it's working
 
 #define ZOFFSET 0.338 // fixed offset from Velodyne frame to ground
 
 
 inline float radial_dist(float & x, float & y)
   { return sqrt(pow(x,2) + pow(y, 2)); }
-
 
 
 class ConicalFilter
@@ -65,7 +61,7 @@ private:
     // grab necessary info for processing
     width = input->width;
     s = input->point_step; // store as variable since we use this later
-    std::cout << "number of data points in input cloud: " << width << std::endl;
+    std::cout << "number of points in  input cloud: " << width << std::endl;
 
     // fill new pointcloud with matching data from old
     cloud_filtered->header = input->header;
@@ -78,7 +74,7 @@ private:
 
     // BEGIN HACKIEST SHIT EVER
     float * start_address = (float *)(&(input->data[0]));
-    std::cout << "start address of data: " << start_address << std::endl;
+    // std::cout << "start address of data: " << start_address << std::endl;
 
     new_width = 0; // keep track of this to export with output data
     for(int i = 0; i < width; ++i) // iterate through each point in input cloud
@@ -104,7 +100,7 @@ private:
         ++new_width; // increment # of new data points
       }
     }
-    std::cout << "number of data points in output cloud: " << new_width << std::endl;
+    std::cout << "number of points in output cloud: " << new_width << std::endl;
     cloud_filtered->width = new_width;
     cloud_filtered->row_step = new_width * s; // # points * length of point
 
