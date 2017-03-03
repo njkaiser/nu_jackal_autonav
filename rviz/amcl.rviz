@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Velodyne Points
+    SyncSource: for costmap
 Visualization Manager:
   Class: ""
   Displays:
@@ -230,7 +230,7 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 100
+      Max Intensity: 112.5
       Min Color: 0; 0; 0
       Min Intensity: 0
       Name: for costmap
@@ -369,11 +369,11 @@ Visualization Manager:
       Class: rviz/Map
       Color Scheme: costmap
       Draw Behind: false
-      Enabled: true
+      Enabled: false
       Name: Global Costmap
       Topic: /move_base/global_costmap/costmap
       Unreliable: false
-      Value: true
+      Value: false
     - Alpha: 0.7
       Class: rviz/Map
       Color Scheme: costmap
@@ -462,6 +462,15 @@ Visualization Manager:
       Topic: /particlecloud
       Unreliable: false
       Value: true
+    - Alpha: 0.7
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map Of Area
+      Topic: /map
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -482,22 +491,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.25779
+      Distance: 15.418
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.00596
-        Y: 0.299391
-        Z: 1.21209
+        X: -0.327284
+        Y: -2.41182
+        Z: -1.56526
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.644799
+      Pitch: 0.839799
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.70691
+      Yaw: 2.27691
     Saved: ~
 Window Geometry:
   Camera Feed:

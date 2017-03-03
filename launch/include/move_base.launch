@@ -17,7 +17,7 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
     <!-- <remap from="odom" to="odometry/filtered" /> -->
     <remap from="odom" to="odometry/corrected" />
-    <remap from="cmd_vel" to="move_base/cmd_vel" /> # does this actually work?
+    <!-- <remap from="cmd_vel" to="move_base/cmd_vel" /> # does this actually work? -->
   </node>
 
 
