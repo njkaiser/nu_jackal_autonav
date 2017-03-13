@@ -1,0 +1,7 @@
+<library path="lib/libcustom_planner_lib">
+  <class name="custom_planner/CustomPlanner" type="custom_planner::CustomPlanner" base_class_type="nav_core::BaseLocalPlanner">
+    <description>
+      Plugin implementation of custom local planner for MSR Winter Project
+    </description>
+  </class>
+</library>

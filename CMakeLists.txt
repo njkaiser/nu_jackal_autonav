@@ -134,7 +134,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
@@ -144,6 +144,8 @@ include_directories(
 # add_library(winter_project
 #   src/${PROJECT_NAME}/winter_project.cpp
 # )
+add_library(custom_planner_lib src/custom_planner.cpp)
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -249,3 +251,8 @@ add_dependencies(ground_plane_cheat ${catkin_EXPORTED_TARGETS} ground_plane_chea
 add_executable(conical_filter src/conical_filter.cpp)
 target_link_libraries(conical_filter ${catkin_LIBRARIES})
 add_dependencies(conical_filter ${catkin_EXPORTED_TARGETS} conical_filter)
+
+# DON'T NEED TO ADD THIS AS AN EXECUTABLE
+# SINCE IT'S ALREADY ADDED AS A LIBRARY...
+# add_executable(custom_planner src/custom_planner.cpp)
+# target_link_libraries(custom_planner ${catkin_LIBRARIES})
