@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(winter_project)
 
-# add_definitions(-std=c++11) THIS WAS CAUSING SEGFAULT WITH CERTAIN PCL METHODS
+# add_definitions(-std=c++11) THIS WAS CAUSING SEGFAULT WITH CERTAIN PCL STUFF
 
 # SHOULDN'T NEED THIS IF THE PROGRAM COMPILED JUST FINE...
 # FIND_LIBRARY(HDF5_LIBRARY hdf5 /usr/local/hdf5/lib/)
@@ -22,6 +22,17 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   velodyne_msgs
   nav_msgs
+  base_local_planner
+  costmap_2d
+  move_base
+  move_base_msgs
+  actionlib
+  nav_core
+  tf
+  nav_msgs
+  pluginlib
+  cmake_modules
+  dynamic_reconfigure
 #  std_srvs
 #  cv_bridge
 )
@@ -32,6 +43,7 @@ find_package(catkin REQUIRED COMPONENTS
 #find_package(octomap REQUIRED)
 find_package(PCL REQUIRED)
 find_package(PkgConfig REQUIRED)
+# find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -144,7 +156,12 @@ include_directories(
 # add_library(winter_project
 #   src/${PROJECT_NAME}/winter_project.cpp
 # )
+
 add_library(custom_planner_lib src/custom_planner.cpp)
+#target_link_libraries(custom_planner_lib ${catkin_LIBRARIES} base_local_planner)
+target_link_libraries(custom_planner_lib ${catkin_LIBRARIES})
+
+#add_library(button_cancel_navigation_lib src/button_cancel_navigation.cpp)
 
 
 ## Add cmake target dependencies of the library
@@ -256,3 +273,7 @@ add_dependencies(conical_filter ${catkin_EXPORTED_TARGETS} conical_filter)
 # SINCE IT'S ALREADY ADDED AS A LIBRARY...
 # add_executable(custom_planner src/custom_planner.cpp)
 # target_link_libraries(custom_planner ${catkin_LIBRARIES})
+
+
+## This plugin includes Qt widgets, so we must include Qt like so:
+# include(${QT_USE_FILE})

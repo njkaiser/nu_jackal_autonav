@@ -14,10 +14,9 @@
     <rosparam file="$(find winter_project)/params/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find winter_project)/params/move_base_params.yaml" command="load" />
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
-    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
-    <!-- <remap from="odom" to="odometry/filtered" /> -->
+    <!-- <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/> -->
+    <param name="base_local_planner" value="custom_planner/CustomPlanner"/>
     <remap from="odom" to="odometry/corrected" />
-    <!-- <remap from="cmd_vel" to="move_base/cmd_vel" /> # does this actually work? -->
   </node>
 
 
