@@ -132,7 +132,8 @@ namespace custom_planner
     // }
     // return dp_->setPlan(orig_global_plan);
     // return planner_util_->setPlan(orig_global_plan);
-    return true; // just getting this to work for now, fill in later
+    return planner_util_.setPlan(orig_global_plan);
+    // return true; // just getting this to work for now, fill in later
     // return false; // just getting this to work for now, fill in later
   }
 
@@ -168,6 +169,7 @@ namespace custom_planner
   bool CustomPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)
   {
     // dispatches to either dwa sampling control or stop and rotate control, depending on whether we are close enough to goal
+    cmd_vel.linear.x = 1.0;
     if(!costmap_ros_->getRobotPose(current_pose_))
     {
       ROS_ERROR("Could not get robot pose");
