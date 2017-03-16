@@ -96,6 +96,16 @@ private:
   // current pose information from nav_core
   tf::Stamped<tf::Pose> current_pose_;
 
+  // publish the local plan
+  void publishLocalPlan(std::vector<geometry_msgs::PoseStamped>& path);
+
+  // publish the global plan
+  void publishGlobalPlan(std::vector<geometry_msgs::PoseStamped>& path);
+
+  // for visualisation, publishers of global and local plan
+  ros::Publisher g_plan_pub_, l_plan_pub_;
+
+  // WHAT IS THIS?!?!?! I'll figure it out later.
   base_local_planner::LatchedStopRotateController latchedStopRotateController_;
 
   // this class provides odometry information for ROS based robots
