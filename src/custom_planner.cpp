@@ -131,8 +131,8 @@ namespace custom_planner
     //   cout << "global plan[" << i << "]: " << orig_global_plan[i] << endl;
     // }
     // return dp_->setPlan(orig_global_plan);
-    return planner_util_->setPlan(orig_global_plan);
-    // return true; // just getting this to work for now, fill in later
+    // return planner_util_->setPlan(orig_global_plan);
+    return true; // just getting this to work for now, fill in later
     // return false; // just getting this to work for now, fill in later
   }
 
@@ -196,10 +196,10 @@ namespace custom_planner
     if(latchedStopRotateController_.isPositionReached(&planner_util_, current_pose_))
     {
       //publish an empty plan because we've reached our goal position
-      // std::vector<geometry_msgs::PoseStamped> local_plan;
-      // std::vector<geometry_msgs::PoseStamped> transformed_plan;
-      // publishGlobalPlan(transformed_plan);
-      // publishLocalPlan(local_plan);
+      std::vector<geometry_msgs::PoseStamped> local_plan;
+      std::vector<geometry_msgs::PoseStamped> transformed_plan;
+      publishGlobalPlan(transformed_plan);
+      publishLocalPlan(local_plan);
       base_local_planner::LocalPlannerLimits limits = planner_util_.getCurrentLimits();
       // return latchedStopRotateController_.computeVelocityCommandsStopRotate(
       //   cmd_vel,
@@ -213,17 +213,17 @@ namespace custom_planner
     }
     else
     {
-      // bool isOk = DWAComputeVelocityCommands(current_pose_, cmd_vel);
+      // bool isOk = dwaComputeVelocityCommands(current_pose_, cmd_vel);
       bool isOk = true; // just getting this to work for now, fill in later
       if(isOk)
       {
-        // publishGlobalPlan(transformed_plan);
+        publishGlobalPlan(transformed_plan);
       }
       else
       {
         ROS_WARN_NAMED("custom_planner", "Custom planner failed to produce path.");
         std::vector<geometry_msgs::PoseStamped> empty_plan;
-        // publishGlobalPlan(empty_plan);
+        publishGlobalPlan(empty_plan);
       }
 
       // hack to get it to work:
