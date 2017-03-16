@@ -13,31 +13,18 @@
     <rosparam file="$(find winter_project)/$(arg global_costmap_dir)" command="load" />
     <rosparam file="$(find winter_project)/params/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find winter_project)/params/move_base_params.yaml" command="load" />
-    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
-    <!-- <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/> -->
-    <param name="base_local_planner" value="custom_planner/CustomPlanner"/>
+
+    <!-- ALL OF THE GLOBAL PLUGINS I HAVE (choose 1) -->
+    <!-- <param name="base_global_planner" type="string" value="navfn/NavfnROS" /> -->
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+    <!-- <param name="base_global_planner" value="carrot_planner/CarrotPlanner"/> -->
+
+    <!-- ALL OF THE LOCAL PLUGINS I HAVE (choose 1) -->
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <!-- <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/> -->
+    <!-- <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/> -->
+    <!-- <param name="base_local_planner" value="custom_planner/CustomPlanner"/> -->
     <remap from="odom" to="odometry/corrected" />
   </node>
-
-
-
-<!-- EXPERIMENTING WITH teb_local_planner, COMMENT EVERYTHING OUT ABOVE TO USE, COMMENT EVERYTHING OUT BELOW TO USE THE ORIGINAL dwa_local_planner -->
-  <!-- Run the map server I RUN THIS WHEN I CALL THE AMCL NODE ALREADY -->
-  <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find winter_project)/maps/tutorial_map.pgm 0.02"/> -->
-
-  <!--- Run AMCL -->
-  <!--- We load ACML here with diff=true to support our differential drive robot -->
-  <!-- <include file="$(find amcl)/examples/amcl_diff.launch" /> I RUN THIS WHEN I CALL THE AMCL NODE ALREADY -->
-
-  <!-- <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find winter_project)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find winter_project)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find winter_project)/$(arg local_costmap_dir)" command="load" />
-    <rosparam file="$(find winter_project)/$(arg global_costmap_dir)" command="load" />
-    <rosparam file="$(find winter_project)/params/base_local_planner_params.yaml" command="load" />
-
-    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
-    <param name="controller_frequency" value="10.0" />
-  </node> -->
 
 </launch>
