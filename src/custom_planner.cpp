@@ -18,52 +18,17 @@ using namespace std;
 namespace custom_planner
 {
 
-  // void DWAPlannerROS::reconfigureCB(DWAPlannerConfig &config, uint32_t level) {
-  //     if (setup_ && config.restore_defaults) {
-  //       config = default_config_;
-  //       config.restore_defaults = false;
-  //     }
-  //     if ( ! setup_) {
-  //       default_config_ = config;
-  //       setup_ = true;
-  //     }
-  //
-  //     // update generic local planner params
-  //     base_local_planner::LocalPlannerLimits limits;
-  //     limits.max_trans_vel = config.max_trans_vel;
-  //     limits.min_trans_vel = config.min_trans_vel;
-  //     limits.max_vel_x = config.max_vel_x;
-  //     limits.min_vel_x = config.min_vel_x;
-  //     limits.max_vel_y = config.max_vel_y;
-  //     limits.min_vel_y = config.min_vel_y;
-  //     limits.max_rot_vel = config.max_rot_vel;
-  //     limits.min_rot_vel = config.min_rot_vel;
-  //     limits.acc_lim_x = config.acc_lim_x;
-  //     limits.acc_lim_y = config.acc_lim_y;
-  //     limits.acc_lim_theta = config.acc_lim_theta;
-  //     limits.acc_limit_trans = config.acc_limit_trans;
-  //     limits.xy_goal_tolerance = config.xy_goal_tolerance;
-  //     limits.yaw_goal_tolerance = config.yaw_goal_tolerance;
-  //     limits.prune_plan = config.prune_plan;
-  //     limits.trans_stopped_vel = config.trans_stopped_vel;
-  //     limits.rot_stopped_vel = config.rot_stopped_vel;
-  //     planner_util_.reconfigureCB(limits, config.restore_defaults);
-  //
-  //     // update dwa specific configuration
-  //     dp_->reconfigure(config);
-  // }
-
-
-  // constructor - probably leave empty, do any necessary initializations in initialize()
+  // constructor - leave empty, do any necessary initializations in initialize()
   CustomPlanner::CustomPlanner()
   : initialized(false)//, //, odom_helper_("odom")
+    // BELIEVE ONE OF THE BELOW WAS CREATING THE NO-RUN ERROR WITH move_base:
     // path_costs_(planner_util_.getCostmap()),
     // goal_costs_(planner_util_.getCostmap(), 0.0, 0.0, true),
     // goal_front_costs_(planner_util_.getCostmap(), 0.0, 0.0, true),
     // alignment_costs_(planner_util_.getCostmap())
   {
     // ROS_INFO("empty constructor called");
-    cout << "empty constructor called" <<endl;
+    // cout << "empty constructor called" <<endl;
 
     // base_local_planner::Trajectory traj;
     // cout << traj.xv_ << endl;
@@ -77,7 +42,7 @@ namespace custom_planner
   // constructs the local planner (but technically this is not the constructor)
   void CustomPlanner::initialize(std::string name, tf::TransformListener* tf, costmap_2d::Costmap2DROS* costmap_ros)
   {
-    cout << "initialize() function called" << endl;
+    // cout << "initialize() function called" << endl;
     if(!initialized)
     {
       ros::NodeHandle private_nh("~/" + name);
@@ -92,9 +57,6 @@ namespace custom_planner
 
       planner_util_.initialize(tf, costmap, costmap_ros_->getGlobalFrameID());
 
-      //create the actual planner that we'll use.. it'll configure itself from the parameter server
-      // dp_ = boost::shared_ptr<dwa_local_planner::DWAPlanner>(new dwa_local_planner::DWAPlanner(name, &planner_util_));
-
       if(private_nh.getParam("odom_topic", odom_topic_))
       {
         odom_helper_.setOdomTopic(odom_topic_);
@@ -104,24 +66,22 @@ namespace custom_planner
       initialized = true;
       cout << "initialized set to true, shouldn't see this message again" << endl;
 
-      // dsrv_ = new dynamic_reconfigure::Server<DWAPlannerConfig>(private_nh);
-      // dynamic_reconfigure::Server<DWAPlannerConfig>::CallbackType cb = boost::bind(&DWAPlannerROS::reconfigureCB, this, _1, _2);
       // dsrv_->setCallback(cb);
 
       // STUFF RIPPED FROM DYNAMIC RECONFIGURE, SINCE I DON'T WANT TO DEAL WITH THAT RIGHT NOW
-      private_nh.param("cheat_factor", cheat_factor_, 1.0);
-      pdist_scale_ = 0.6; // default value from DWA dynamic reconfigure
-      double resolution = planner_util_.getCostmap()->getResolution();
-      // path_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap());
-      path_costs_.setScale(resolution * pdist_scale_ * 0.5);
-      gdist_scale_ = 0.8; // default value from DWA dynamic reconfigure
-      // goal_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap(), 0.0, 0.0, true)
-      goal_costs_.setScale(resolution * gdist_scale_ * 0.5);
-      forward_point_distance_ = 0.325; // assuming this is heading_lookahead from dynamic reconfigure?
-      // goal_front_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap(), 0.0, 0.0, true)
-      goal_front_costs_.setScale(resolution * gdist_scale_ * 0.5);
-      goal_front_costs_.setXShift(forward_point_distance_);
-      goal_front_costs_.setStopOnFailure( false );
+      // private_nh.param("cheat_factor", cheat_factor_, 1.0);
+      // pdist_scale_ = 0.6; // default value from DWA dynamic reconfigure
+      // double resolution = planner_util_.getCostmap()->getResolution();
+      // // path_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap());
+      // path_costs_.setScale(resolution * pdist_scale_ * 0.5);
+      // gdist_scale_ = 0.8; // default value from DWA dynamic reconfigure
+      // // goal_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap(), 0.0, 0.0, true)
+      // goal_costs_.setScale(resolution * gdist_scale_ * 0.5);
+      // forward_point_distance_ = 0.325; // assuming this is heading_lookahead from dynamic reconfigure?
+      // // goal_front_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap(), 0.0, 0.0, true)
+      // goal_front_costs_.setScale(resolution * gdist_scale_ * 0.5);
+      // goal_front_costs_.setXShift(forward_point_distance_);
+      // goal_front_costs_.setStopOnFailure( false );
     }
     else
     {
@@ -135,7 +95,7 @@ namespace custom_planner
   // set the [global] plan that the local planner is following
   bool CustomPlanner::setPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan)
   {
-    cout << "setPlan() function called" << endl;
+    // cout << "setPlan() function called" << endl;
 
     if(!initialized)
     {
@@ -145,7 +105,7 @@ namespace custom_planner
     //when we get a new plan, we also want to clear any latch we may have on goal tolerances
     latchedStopRotateController_.resetLatching();
 
-    ROS_INFO("Got new plan");
+    // ROS_INFO("Got new plan");
 
     cout << "global plan size: " << orig_global_plan.size() << endl;
     // for(int i = 0; i < orig_global_plan.size(); ++i)
@@ -153,18 +113,18 @@ namespace custom_planner
     //   cout << "global plan[" << i << "]: " << orig_global_plan[i] << endl;
     // }
     // return dp_->setPlan(orig_global_plan);
-    return planner_util_.setPlan(orig_global_plan);
-    // return true; // just getting this to work for now, fill in later
-    // return false; // just getting this to work for now, fill in later
 
-    cout << "setPlan() function ended" << endl;
+    // THIS IS THE LINE THAT WAS REQUIRED TO GET THINGS TO WORK, CAN'T FAKE IT OUT WITH "true" OR "false"
+    return planner_util_.setPlan(orig_global_plan);
+
+    // cout << "setPlan() function ended" << endl;
   }
 
 
   // notifies nav_core if goal is reached
   bool CustomPlanner::isGoalReached()
   {
-    cout << "isGoalReached() function called" << endl;
+    // cout << "isGoalReached() function called" << endl;
 
     if(!initialized)
     {
@@ -188,14 +148,14 @@ namespace custom_planner
       return false;
     }
 
-    cout << "isGoalReached() function ended" << endl;
+    // cout << "isGoalReached() function ended" << endl;
   }
 
 
   // given the current position, orientation, and velocity of the robot, compute velocity commands to send to the base
   bool CustomPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)
   {
-    cout << "computeVelocityCommands() function called" << endl;
+    // cout << "computeVelocityCommands() function called" << endl;
 
     // dispatches to either dwa sampling control or stop and rotate control, depending on whether we are close enough to goal
     if(!initialized)
@@ -224,10 +184,10 @@ namespace custom_planner
       return false;
     }
 
-    ROS_DEBUG_NAMED("custom_planner", "Received a transformed plan with %zu points.", transformed_plan.size());
+    // ROS_DEBUG_NAMED("custom_planner", "Received a transformed plan with %zu points.", transformed_plan.size());
 
     // update plan in dwa_planner even if we just stop and rotate, to allow checkTrajectory
-    updatePlanAndLocalCosts(current_pose_, transformed_plan);
+    // updatePlanAndLocalCosts(current_pose_, transformed_plan);
 
     if(latchedStopRotateController_.isPositionReached(&planner_util_, current_pose_))
     {
@@ -249,9 +209,10 @@ namespace custom_planner
     }
     else
     {
+      // REPLACING BELOW LINE WITH COPY/PASTE OF CODE FROM dwa_planner.cpp
       // bool isOk = dwaComputeVelocityCommands(current_pose_, cmd_vel);
-      bool isOk;
       // START OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
+      bool isOk;
       { // THESE BRACKETS AREN'T NECESSARY, BUT LEAVING THEM FOR ORGANIZATION
         // dynamic window sampling approach to get useful velocity commands
         tf::Stamped<tf::Pose> robot_vel;
@@ -269,23 +230,9 @@ namespace custom_planner
 
         // call with updated footprint
         // base_local_planner::Trajectory path = dp_->findBestPath(current_pose_, robot_vel, drive_cmds, costmap_ros_->getRobotFootprint());
-        base_local_planner::Trajectory path(0.0, 0.0, 0.0, 0.02, 10);
-        // path.xv_ = 0;
-        // cout << path.xv_ << endl;
-        // path.yv_ = 0;
-        // cout << path.yv_ << endl;
-        // path.thetav_ = 0;
-        // cout << path.thetav_ << endl;
-        path.cost_ = 9.99;
-        // cout << path.cost_ << endl;
-        // path.time_delta_ = 0.02;
-        // cout << path.time_delta_ << endl;
-        // path.x_pts_ = 1;
-        // path.y_pts_ = 1;
-        // path.th_pts_ = 1;
-        // cout << path.x_pts_.size() << endl;
-
         //ROS_ERROR("Best: %.2f, %.2f, %.2f, %.2f", path.xv_, path.yv_, path.thetav_, path.cost_);
+        base_local_planner::Trajectory path(0.0, 0.0, 0.0, 0.02, 10);
+        path.cost_ = 9.99;
 
         /* For timing uncomment
         gettimeofday(&end, NULL);
@@ -296,9 +243,14 @@ namespace custom_planner
         */
 
         // pass along drive commands
-        cmd_vel.linear.x = drive_cmds.getOrigin().getX();
-        cmd_vel.linear.y = drive_cmds.getOrigin().getY();
-        cmd_vel.angular.z = tf::getYaw(drive_cmds.getRotation());
+        // cmd_vel.linear.x = drive_cmds.getOrigin().getX();
+        // cmd_vel.linear.y = drive_cmds.getOrigin().getY();
+        // cmd_vel.angular.z = tf::getYaw(drive_cmds.getRotation());
+
+        // MY VERSION
+        cmd_vel.linear.x = 0.5;
+        // cmd_vel.linear.y = drive_cmds.getOrigin().getY(); <<< THIS IS NOT NEEDED SINCE ROBOT CAN'T DRIVE SIDEWAYS
+        cmd_vel.angular.z = 0;
 
         // if we cannot move... tell someone
         std::vector<geometry_msgs::PoseStamped> local_plan;
@@ -372,8 +324,8 @@ namespace custom_planner
       return isOk;
     }
 
-    cout << "computeVelocityCommands() function ended" << endl;
-  }
+    // cout << "computeVelocityCommands() function ended" << endl;
+  } // END OF FUNCTION computeVelocityCommands()
 
 
   // destructor - delete any dynamically allocated objects
@@ -476,56 +428,56 @@ namespace custom_planner
   // } // END OF FUNCTION findBestPath()
 
 
-  void CustomPlanner::updatePlanAndLocalCosts(tf::Stamped<tf::Pose> global_pose, const std::vector<geometry_msgs::PoseStamped>& new_plan)
-  {
-    cout << "updatePlanAndLocalCosts() function called" << endl;
-
-    global_plan_.resize(new_plan.size());
-    for (unsigned int i = 0; i < new_plan.size(); ++i) {
-      global_plan_[i] = new_plan[i];
-    }
-
-    // costs for going away from path
-    path_costs_.setTargetPoses(global_plan_);
-
-    // costs for not going towards the local goal as much as possible
-    goal_costs_.setTargetPoses(global_plan_);
-
-    // alignment costs
-    geometry_msgs::PoseStamped goal_pose = global_plan_.back();
-
-    Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
-    double sq_dist =
-        (pos[0] - goal_pose.pose.position.x) * (pos[0] - goal_pose.pose.position.x) +
-        (pos[1] - goal_pose.pose.position.y) * (pos[1] - goal_pose.pose.position.y);
-
-    // we want the robot nose to be drawn to its final position
-    // (before robot turns towards goal orientation), not the end of the
-    // path for the robot center. Choosing the final position after
-    // turning towards goal orientation causes instability when the
-    // robot needs to make a 180 degree turn at the end
-    std::vector<geometry_msgs::PoseStamped> front_global_plan = global_plan_;
-    double angle_to_goal = atan2(goal_pose.pose.position.y - pos[1], goal_pose.pose.position.x - pos[0]);
-    front_global_plan.back().pose.position.x = front_global_plan.back().pose.position.x +
-      forward_point_distance_ * cos(angle_to_goal);
-    front_global_plan.back().pose.position.y = front_global_plan.back().pose.position.y + forward_point_distance_ *
-      sin(angle_to_goal);
-
-    goal_front_costs_.setTargetPoses(front_global_plan);
-
-    // keeping the nose on the path
-    if (sq_dist > forward_point_distance_ * forward_point_distance_ * cheat_factor_) {
-      double resolution = planner_util_.getCostmap()->getResolution();
-      alignment_costs_.setScale(resolution * pdist_scale_ * 0.5);
-      // costs for robot being aligned with path (nose on path, not ju
-      alignment_costs_.setTargetPoses(global_plan_);
-    } else {
-      // once we are close to goal, trying to keep the nose close to anything destabilizes behavior.
-      alignment_costs_.setScale(0.0);
-    }
-
-    cout << "updatePlanAndLocalCosts() function ended" << endl;
-  }
+  // void CustomPlanner::updatePlanAndLocalCosts(tf::Stamped<tf::Pose> global_pose, const std::vector<geometry_msgs::PoseStamped>& new_plan)
+  // {
+  //   cout << "updatePlanAndLocalCosts() function called" << endl;
+  //
+  //   global_plan_.resize(new_plan.size());
+  //   for (unsigned int i = 0; i < new_plan.size(); ++i) {
+  //     global_plan_[i] = new_plan[i];
+  //   }
+  //
+  //   // costs for going away from path
+  //   path_costs_.setTargetPoses(global_plan_);
+  //
+  //   // costs for not going towards the local goal as much as possible
+  //   goal_costs_.setTargetPoses(global_plan_);
+  //
+  //   // alignment costs
+  //   geometry_msgs::PoseStamped goal_pose = global_plan_.back();
+  //
+  //   Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
+  //   double sq_dist =
+  //       (pos[0] - goal_pose.pose.position.x) * (pos[0] - goal_pose.pose.position.x) +
+  //       (pos[1] - goal_pose.pose.position.y) * (pos[1] - goal_pose.pose.position.y);
+  //
+  //   // we want the robot nose to be drawn to its final position
+  //   // (before robot turns towards goal orientation), not the end of the
+  //   // path for the robot center. Choosing the final position after
+  //   // turning towards goal orientation causes instability when the
+  //   // robot needs to make a 180 degree turn at the end
+  //   std::vector<geometry_msgs::PoseStamped> front_global_plan = global_plan_;
+  //   double angle_to_goal = atan2(goal_pose.pose.position.y - pos[1], goal_pose.pose.position.x - pos[0]);
+  //   front_global_plan.back().pose.position.x = front_global_plan.back().pose.position.x +
+  //     forward_point_distance_ * cos(angle_to_goal);
+  //   front_global_plan.back().pose.position.y = front_global_plan.back().pose.position.y + forward_point_distance_ *
+  //     sin(angle_to_goal);
+  //
+  //   goal_front_costs_.setTargetPoses(front_global_plan);
+  //
+  //   // keeping the nose on the path
+  //   if (sq_dist > forward_point_distance_ * forward_point_distance_ * cheat_factor_) {
+  //     double resolution = planner_util_.getCostmap()->getResolution();
+  //     alignment_costs_.setScale(resolution * pdist_scale_ * 0.5);
+  //     // costs for robot being aligned with path (nose on path, not ju
+  //     alignment_costs_.setTargetPoses(global_plan_);
+  //   } else {
+  //     // once we are close to goal, trying to keep the nose close to anything destabilizes behavior.
+  //     alignment_costs_.setScale(0.0);
+  //   }
+  //
+  //   cout << "updatePlanAndLocalCosts() function ended" << endl;
+  // }
 
 
 }; // END OF NAMESPACE custom_planner
