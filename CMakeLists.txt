@@ -32,9 +32,6 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   pluginlib
   cmake_modules
-  dynamic_reconfigure
-#  std_srvs
-#  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
