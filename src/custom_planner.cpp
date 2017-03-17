@@ -9,7 +9,7 @@
 #include <nav_msgs/Path.h>
 #include <geometry_msgs/Twist.h>
 
-//register this planner as a BaseLocalPlanner plugin
+// register this planner as a BaseLocalPlanner plugin
 #include <pluginlib/class_list_macros.h> // required for loading as a plugin
 PLUGINLIB_EXPORT_CLASS(custom_planner::CustomPlanner, nav_core::BaseLocalPlanner)
 
@@ -56,7 +56,11 @@ namespace custom_planner
 
   // constructor - probably leave empty, do any necessary initializations in initialize()
   CustomPlanner::CustomPlanner()
-  : initialized(false)//, odom_helper_("odom")
+  : initialized(false)//, //, odom_helper_("odom")
+    // path_costs_(planner_util_.getCostmap()),
+    // goal_costs_(planner_util_.getCostmap(), 0.0, 0.0, true),
+    // goal_front_costs_(planner_util_.getCostmap(), 0.0, 0.0, true),
+    // alignment_costs_(planner_util_.getCostmap())
   {
     // ROS_INFO("empty constructor called");
     cout << "empty constructor called" <<endl;
@@ -90,7 +94,6 @@ namespace custom_planner
 
       //create the actual planner that we'll use.. it'll configure itself from the parameter server
       // dp_ = boost::shared_ptr<dwa_local_planner::DWAPlanner>(new dwa_local_planner::DWAPlanner(name, &planner_util_));
-      // dp_ = boost::shared_ptr<CustomPlanner>(new CustomPlanner(name, &planner_util_));
 
       if(private_nh.getParam("odom_topic", odom_topic_))
       {
@@ -104,17 +107,36 @@ namespace custom_planner
       // dsrv_ = new dynamic_reconfigure::Server<DWAPlannerConfig>(private_nh);
       // dynamic_reconfigure::Server<DWAPlannerConfig>::CallbackType cb = boost::bind(&DWAPlannerROS::reconfigureCB, this, _1, _2);
       // dsrv_->setCallback(cb);
+
+      // STUFF RIPPED FROM DYNAMIC RECONFIGURE, SINCE I DON'T WANT TO DEAL WITH THAT RIGHT NOW
+      private_nh.param("cheat_factor", cheat_factor_, 1.0);
+      pdist_scale_ = 0.6; // default value from DWA dynamic reconfigure
+      double resolution = planner_util_.getCostmap()->getResolution();
+      // path_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap());
+      path_costs_.setScale(resolution * pdist_scale_ * 0.5);
+      gdist_scale_ = 0.8; // default value from DWA dynamic reconfigure
+      // goal_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap(), 0.0, 0.0, true)
+      goal_costs_.setScale(resolution * gdist_scale_ * 0.5);
+      forward_point_distance_ = 0.325; // assuming this is heading_lookahead from dynamic reconfigure?
+      // goal_front_costs_ = base_local_planner::MapGridCostFunction(planner_util_.getCostmap(), 0.0, 0.0, true)
+      goal_front_costs_.setScale(resolution * gdist_scale_ * 0.5);
+      goal_front_costs_.setXShift(forward_point_distance_);
+      goal_front_costs_.setStopOnFailure( false );
     }
     else
     {
       ROS_WARN("This planner has already been initialized, doing nothing.");
     }
-  }
+
+    cout << "initialize() function ended" << endl;
+  } // END OF FUNCTION initialize()
 
 
   // set the [global] plan that the local planner is following
   bool CustomPlanner::setPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan)
   {
+    cout << "setPlan() function called" << endl;
+
     if(!initialized)
     {
       ROS_ERROR("This planner has not been initialized, please call initialize() before using this planner");
@@ -131,16 +153,19 @@ namespace custom_planner
     //   cout << "global plan[" << i << "]: " << orig_global_plan[i] << endl;
     // }
     // return dp_->setPlan(orig_global_plan);
-    // return planner_util_->setPlan(orig_global_plan);
     return planner_util_.setPlan(orig_global_plan);
     // return true; // just getting this to work for now, fill in later
     // return false; // just getting this to work for now, fill in later
+
+    cout << "setPlan() function ended" << endl;
   }
 
 
   // notifies nav_core if goal is reached
   bool CustomPlanner::isGoalReached()
   {
+    cout << "isGoalReached() function called" << endl;
+
     if(!initialized)
     {
       ROS_ERROR("This planner has not been initialized, please call initialize() before using this planner");
@@ -162,14 +187,23 @@ namespace custom_planner
     {
       return false;
     }
+
+    cout << "isGoalReached() function ended" << endl;
   }
 
 
   // given the current position, orientation, and velocity of the robot, compute velocity commands to send to the base
   bool CustomPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)
   {
+    cout << "computeVelocityCommands() function called" << endl;
+
     // dispatches to either dwa sampling control or stop and rotate control, depending on whether we are close enough to goal
-    cmd_vel.linear.x = 1.0;
+    if(!initialized)
+    {
+      ROS_ERROR("This planner has not been initialized, please call initialize() before using this planner");
+      return false;
+    }
+
     if(!costmap_ros_->getRobotPose(current_pose_))
     {
       ROS_ERROR("Could not get robot pose");
@@ -193,7 +227,7 @@ namespace custom_planner
     ROS_DEBUG_NAMED("custom_planner", "Received a transformed plan with %zu points.", transformed_plan.size());
 
     // update plan in dwa_planner even if we just stop and rotate, to allow checkTrajectory
-    // dp_->updatePlanAndLocalCosts(current_pose_, transformed_plan);
+    updatePlanAndLocalCosts(current_pose_, transformed_plan);
 
     if(latchedStopRotateController_.isPositionReached(&planner_util_, current_pose_))
     {
@@ -216,7 +250,88 @@ namespace custom_planner
     else
     {
       // bool isOk = dwaComputeVelocityCommands(current_pose_, cmd_vel);
-      bool isOk = true; // just getting this to work for now, fill in later
+      bool isOk;
+      // START OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
+      { // THESE BRACKETS AREN'T NECESSARY, BUT LEAVING THEM FOR ORGANIZATION
+        // dynamic window sampling approach to get useful velocity commands
+        tf::Stamped<tf::Pose> robot_vel;
+        odom_helper_.getRobotVel(robot_vel);
+
+        /* For timing uncomment
+        struct timeval start, end;
+        double start_t, end_t, t_diff;
+        gettimeofday(&start, NULL);
+        */
+
+        //compute what trajectory to drive along
+        tf::Stamped<tf::Pose> drive_cmds;
+        drive_cmds.frame_id_ = costmap_ros_->getBaseFrameID();
+
+        // call with updated footprint
+        // base_local_planner::Trajectory path = dp_->findBestPath(current_pose_, robot_vel, drive_cmds, costmap_ros_->getRobotFootprint());
+        base_local_planner::Trajectory path(0.0, 0.0, 0.0, 0.02, 10);
+        // path.xv_ = 0;
+        // cout << path.xv_ << endl;
+        // path.yv_ = 0;
+        // cout << path.yv_ << endl;
+        // path.thetav_ = 0;
+        // cout << path.thetav_ << endl;
+        path.cost_ = 9.99;
+        // cout << path.cost_ << endl;
+        // path.time_delta_ = 0.02;
+        // cout << path.time_delta_ << endl;
+        // path.x_pts_ = 1;
+        // path.y_pts_ = 1;
+        // path.th_pts_ = 1;
+        // cout << path.x_pts_.size() << endl;
+
+        //ROS_ERROR("Best: %.2f, %.2f, %.2f, %.2f", path.xv_, path.yv_, path.thetav_, path.cost_);
+
+        /* For timing uncomment
+        gettimeofday(&end, NULL);
+        start_t = start.tv_sec + double(start.tv_usec) / 1e6;
+        end_t = end.tv_sec + double(end.tv_usec) / 1e6;
+        t_diff = end_t - start_t;
+        ROS_INFO("Cycle time: %.9f", t_diff);
+        */
+
+        // pass along drive commands
+        cmd_vel.linear.x = drive_cmds.getOrigin().getX();
+        cmd_vel.linear.y = drive_cmds.getOrigin().getY();
+        cmd_vel.angular.z = tf::getYaw(drive_cmds.getRotation());
+
+        // if we cannot move... tell someone
+        std::vector<geometry_msgs::PoseStamped> local_plan;
+        if(path.cost_ < 0)
+        {
+          ROS_DEBUG_NAMED("dwa_local_planner", "The dwa local planner failed to find a valid plan, cost functions discarded all candidates. This can mean there is an obstacle too close to the robot.");
+          local_plan.clear();
+          publishLocalPlan(local_plan);
+          isOk = false;
+        }
+
+        ROS_DEBUG_NAMED("dwa_local_planner", "A valid velocity command of (%.2f, %.2f, %.2f) was found for this cycle.", cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z);
+
+        // Fill out the local plan
+        for(unsigned int i = 0; i < path.getPointsSize(); ++i)
+        {
+          double p_x, p_y, p_th;
+          path.getPoint(i, p_x, p_y, p_th);
+
+          tf::Stamped<tf::Pose> p = tf::Stamped<tf::Pose>(tf::Pose(tf::createQuaternionFromYaw(p_th), tf::Point(p_x, p_y, 0.0)), ros::Time::now(), costmap_ros_->getGlobalFrameID());
+
+          geometry_msgs::PoseStamped pose;
+          tf::poseStampedTFToMsg(p, pose);
+          local_plan.push_back(pose);
+        }
+
+        //publish information to the visualizer
+        publishLocalPlan(local_plan);
+        isOk = true;
+      } // END OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
+
+
+      // bool isOk = true; // just getting this to work for now, fill in later
       if(isOk)
       {
         publishGlobalPlan(transformed_plan);
@@ -256,6 +371,8 @@ namespace custom_planner
 
       return isOk;
     }
+
+    cout << "computeVelocityCommands() function ended" << endl;
   }
 
 
@@ -274,9 +391,141 @@ namespace custom_planner
   void CustomPlanner::publishLocalPlan(std::vector<geometry_msgs::PoseStamped>& path)
   { base_local_planner::publishPlan(path, l_plan_pub_); }
 
+
   // publish global plan
   void CustomPlanner::publishGlobalPlan(std::vector<geometry_msgs::PoseStamped>& path)
   { base_local_planner::publishPlan(path, g_plan_pub_); }
+
+
+  // FIND THE BEST PATH. DUH.
+  // base_local_planner::Trajectory CustomPlanner::findBestPath(tf::Stamped<tf::Pose> global_pose,tf::Stamped<tf::Pose> global_vel, tf::Stamped<tf::Pose>& drive_velocities, std::vector<geometry_msgs::Point> footprint_spec)
+  // {
+  //   obstacle_costs_.setFootprint(footprint_spec);
+  //
+  //   //make sure that our configuration doesn't change mid-run
+  //   boost::mutex::scoped_lock l(configuration_mutex_);
+  //
+  //   Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
+  //   Eigen::Vector3f vel(global_vel.getOrigin().getX(), global_vel.getOrigin().getY(), tf::getYaw(global_vel.getRotation()));
+  //   geometry_msgs::PoseStamped goal_pose = global_plan_.back();
+  //   Eigen::Vector3f goal(goal_pose.pose.position.x, goal_pose.pose.position.y, tf::getYaw(goal_pose.pose.orientation));
+  //   base_local_planner::LocalPlannerLimits limits = planner_util_->getCurrentLimits();
+  //
+  //   // prepare cost functions and generators for this run
+  //   generator_.initialise(pos,
+  //       vel,
+  //       goal,
+  //       &limits,
+  //       vsamples_);
+  //
+  //   result_traj_.cost_ = -7;
+  //   // find best trajectory by sampling and scoring the samples
+  //   std::vector<base_local_planner::Trajectory> all_explored;
+  //   scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored);
+  //
+  //   if(publish_traj_pc_)
+  //   {
+  //       base_local_planner::MapGridCostPoint pt;
+  //       traj_cloud_->points.clear();
+  //       traj_cloud_->width = 0;
+  //       traj_cloud_->height = 0;
+  //       std_msgs::Header header;
+  //       pcl_conversions::fromPCL(traj_cloud_->header, header);
+  //       header.stamp = ros::Time::now();
+  //       traj_cloud_->header = pcl_conversions::toPCL(header);
+  //       for(std::vector<base_local_planner::Trajectory>::iterator t=all_explored.begin(); t != all_explored.end(); ++t)
+  //       {
+  //           if(t->cost_<0)
+  //               continue;
+  //           // Fill out the plan
+  //           for(unsigned int i = 0; i < t->getPointsSize(); ++i) {
+  //               double p_x, p_y, p_th;
+  //               t->getPoint(i, p_x, p_y, p_th);
+  //               pt.x=p_x;
+  //               pt.y=p_y;
+  //               pt.z=0;
+  //               pt.path_cost=p_th;
+  //               pt.total_cost=t->cost_;
+  //               traj_cloud_->push_back(pt);
+  //           }
+  //       }
+  //       traj_cloud_pub_.publish(*traj_cloud_);
+  //   }
+  //
+  //   // verbose publishing of point clouds
+  //   if (publish_cost_grid_pc_) {
+  //     //we'll publish the visualization of the costs to rviz before returning our best trajectory
+  //     map_viz_.publishCostCloud(planner_util_->getCostmap());
+  //   }
+  //
+  //   // debrief stateful scoring functions
+  //   oscillation_costs_.updateOscillationFlags(pos, &result_traj_, planner_util_->getCurrentLimits().min_trans_vel);
+  //
+  //   //if we don't have a legal trajectory, we'll just command zero
+  //   if (result_traj_.cost_ < 0) {
+  //     drive_velocities.setIdentity();
+  //   } else {
+  //     tf::Vector3 start(result_traj_.xv_, result_traj_.yv_, 0);
+  //     drive_velocities.setOrigin(start);
+  //     tf::Matrix3x3 matrix;
+  //     matrix.setRotation(tf::createQuaternionFromYaw(result_traj_.thetav_));
+  //     drive_velocities.setBasis(matrix);
+  //   }
+  //
+  //   return result_traj_;
+  // } // END OF FUNCTION findBestPath()
+
+
+  void CustomPlanner::updatePlanAndLocalCosts(tf::Stamped<tf::Pose> global_pose, const std::vector<geometry_msgs::PoseStamped>& new_plan)
+  {
+    cout << "updatePlanAndLocalCosts() function called" << endl;
+
+    global_plan_.resize(new_plan.size());
+    for (unsigned int i = 0; i < new_plan.size(); ++i) {
+      global_plan_[i] = new_plan[i];
+    }
+
+    // costs for going away from path
+    path_costs_.setTargetPoses(global_plan_);
+
+    // costs for not going towards the local goal as much as possible
+    goal_costs_.setTargetPoses(global_plan_);
+
+    // alignment costs
+    geometry_msgs::PoseStamped goal_pose = global_plan_.back();
+
+    Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
+    double sq_dist =
+        (pos[0] - goal_pose.pose.position.x) * (pos[0] - goal_pose.pose.position.x) +
+        (pos[1] - goal_pose.pose.position.y) * (pos[1] - goal_pose.pose.position.y);
+
+    // we want the robot nose to be drawn to its final position
+    // (before robot turns towards goal orientation), not the end of the
+    // path for the robot center. Choosing the final position after
+    // turning towards goal orientation causes instability when the
+    // robot needs to make a 180 degree turn at the end
+    std::vector<geometry_msgs::PoseStamped> front_global_plan = global_plan_;
+    double angle_to_goal = atan2(goal_pose.pose.position.y - pos[1], goal_pose.pose.position.x - pos[0]);
+    front_global_plan.back().pose.position.x = front_global_plan.back().pose.position.x +
+      forward_point_distance_ * cos(angle_to_goal);
+    front_global_plan.back().pose.position.y = front_global_plan.back().pose.position.y + forward_point_distance_ *
+      sin(angle_to_goal);
+
+    goal_front_costs_.setTargetPoses(front_global_plan);
+
+    // keeping the nose on the path
+    if (sq_dist > forward_point_distance_ * forward_point_distance_ * cheat_factor_) {
+      double resolution = planner_util_.getCostmap()->getResolution();
+      alignment_costs_.setScale(resolution * pdist_scale_ * 0.5);
+      // costs for robot being aligned with path (nose on path, not ju
+      alignment_costs_.setTargetPoses(global_plan_);
+    } else {
+      // once we are close to goal, trying to keep the nose close to anything destabilizes behavior.
+      alignment_costs_.setScale(0.0);
+    }
+
+    cout << "updatePlanAndLocalCosts() function ended" << endl;
+  }
 
 
 }; // END OF NAMESPACE custom_planner

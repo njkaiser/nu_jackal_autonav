@@ -20,10 +20,10 @@
     <!-- <param name="base_global_planner" value="carrot_planner/CarrotPlanner"/> -->
 
     <!-- ALL OF THE LOCAL PLUGINS I HAVE (choose 1) -->
-    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+    <!-- <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/> -->
     <!-- <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/> -->
     <!-- <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/> -->
-    <!-- <param name="base_local_planner" value="custom_planner/CustomPlanner"/> -->
+    <param name="base_local_planner" value="custom_planner/CustomPlanner"/>
     <remap from="odom" to="odometry/corrected" />
   </node>
 
