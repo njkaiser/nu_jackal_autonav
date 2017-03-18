@@ -77,14 +77,16 @@ private:
     {
       // ROS_ERROR("%s", ex.what());
       ROS_WARN("%s", ex.what());
-      ros::Duration(1.0).sleep();
+      ros::Duration(0.5).sleep();
     }
 
     // z_offset = tf_in.transform.translation.z;
     z_offset = tf_in.getOrigin().z();
+    double theta = tf::getYaw(tf_in.getRotation());
+    theta = 0; // resetting since trying to fix the jiggle makes visualization suck
 
     // set up the transform variables
-    q.setRPY(0, 0, 0);
+    q.setRPY(0, 0, theta);
     new_tf.setOrigin(tf::Vector3(0, 0, -z_offset));
     new_tf.setRotation(q);
 
