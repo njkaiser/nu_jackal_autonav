@@ -20,7 +20,7 @@ namespace custom_planner
 
   // constructor - leave empty, do any necessary initializations in initialize()
   CustomPlanner::CustomPlanner()
-  : initialized(false)//, //, odom_helper_("odom")
+  : already_initialized(false)//, //, odom_helper_("odom")
     // BELIEVE ONE OF THE BELOW WAS CREATING THE NO-RUN ERROR WITH move_base:
     // path_costs_(planner_util_.getCostmap()),
     // goal_costs_(planner_util_.getCostmap(), 0.0, 0.0, true),
@@ -43,7 +43,7 @@ namespace custom_planner
   void CustomPlanner::initialize(std::string name, tf::TransformListener* tf, costmap_2d::Costmap2DROS* costmap_ros)
   {
     // cout << "initialize() function called" << endl;
-    if(!initialized)
+    if(!already_initialized)
     {
       ros::NodeHandle private_nh("~/" + name);
       g_plan_pub_ = private_nh.advertise<nav_msgs::Path>("global_plan", 1);
@@ -63,7 +63,7 @@ namespace custom_planner
       }
       cout << "odom_topic_: " << odom_topic_ << endl;
 
-      initialized = true;
+      already_initialized = true;
       cout << "initialized set to true, shouldn't see this message again" << endl;
 
       // dsrv_->setCallback(cb);
@@ -97,7 +97,7 @@ namespace custom_planner
   {
     // cout << "setPlan() function called" << endl;
 
-    if(!initialized)
+    if(!already_initialized)
     {
       ROS_ERROR("This planner has not been initialized, please call initialize() before using this planner");
       return false;
@@ -107,12 +107,16 @@ namespace custom_planner
 
     // ROS_INFO("Got new plan");
 
-    cout << "global plan size: " << orig_global_plan.size() << endl;
+    // cout << "global plan size: " << orig_global_plan.size() << endl;
     // for(int i = 0; i < orig_global_plan.size(); ++i)
     // {
     //   cout << "global plan[" << i << "]: " << orig_global_plan[i] << endl;
     // }
     // return dp_->setPlan(orig_global_plan);
+
+
+    cout << "last point in global plan: " << orig_global_plan.back() << endl;
+    cout << "current pose: (" << current_pose_.getOrigin().getX() << ' ' << current_pose_.getOrigin().getY() << ' ' << tf::getYaw(current_pose_.getRotation()) << ")" << endl;
 
     // THIS IS THE LINE THAT WAS REQUIRED TO GET THINGS TO WORK, CAN'T FAKE IT OUT WITH "true" OR "false"
     return planner_util_.setPlan(orig_global_plan);
@@ -126,7 +130,7 @@ namespace custom_planner
   {
     // cout << "isGoalReached() function called" << endl;
 
-    if(!initialized)
+    if(!already_initialized)
     {
       ROS_ERROR("This planner has not been initialized, please call initialize() before using this planner");
       return false;
@@ -145,10 +149,10 @@ namespace custom_planner
     }
     else
     {
+      // cout << "isGoalReached() function ended" << endl;
       return false;
     }
 
-    // cout << "isGoalReached() function ended" << endl;
   }
 
 
@@ -158,7 +162,7 @@ namespace custom_planner
     // cout << "computeVelocityCommands() function called" << endl;
 
     // dispatches to either dwa sampling control or stop and rotate control, depending on whether we are close enough to goal
-    if(!initialized)
+    if(!already_initialized)
     {
       ROS_ERROR("This planner has not been initialized, please call initialize() before using this planner");
       return false;

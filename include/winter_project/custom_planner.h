@@ -82,7 +82,7 @@ namespace custom_planner
 
 private:
   // verify we only initialize once
-  bool initialized;
+  bool already_initialized;
 
   // This helper interface provides functionality that should be common to all localplanners in the move_base context. It manages the current global plan, the current motion limits, and the current costmap (local map of sensed obstacles)
   base_local_planner::LocalPlannerUtil planner_util_;
