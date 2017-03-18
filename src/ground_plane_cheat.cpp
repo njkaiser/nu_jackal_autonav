@@ -82,11 +82,15 @@ private:
 
     // z_offset = tf_in.transform.translation.z;
     z_offset = tf_in.getOrigin().z();
-    double theta = tf::getYaw(tf_in.getRotation());
-    theta = 0; // resetting since trying to fix the jiggle makes visualization suck
+    // double theta = tf::getYaw(tf_in.getRotation());
+    // theta = 0; // resetting since trying to fix the jiggle makes visualization suck
+    tf::Matrix3x3 m(tf_in.getRotation());
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
 
     // set up the transform variables
-    q.setRPY(0, 0, theta);
+    // q.setRPY(0, 0, theta);
+    q.setRPY(-roll, -pitch, -yaw);
     new_tf.setOrigin(tf::Vector3(0, 0, -z_offset));
     new_tf.setRotation(q);
 
