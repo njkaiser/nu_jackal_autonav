@@ -47,28 +47,33 @@
 
 
     <!-- LASER MODEL PARAMETERS -->
-    <param name="laser_min_range" value="0.1"/>
+    <param name="laser_min_range" value="0.2"/>
     <param name="laser_max_range" value="30.0"/>
     <param name="laser_max_beams" value="720"/>
+    <!-- likelihood_field model uses only z_hit and z_rand -->
+    <param name="laser_model_type" value="likelihood_field"/>
+    <param name="laser_z_hit" value="0.95"/> # default: 0.95
+    <param name="laser_z_rand" value="0.05"/>
     <!-- FROM AMCL SITE: laser_z_hit (double, default: 0.95) -->
-    <param name="laser_z_hit" value="0.5"/>
+    <!-- <param name="laser_z_hit" value="0.5"/>
     <param name="laser_z_short" value="0.05"/>
     <param name="laser_z_max" value="0.05"/>
-    <param name="laser_z_rand" value="0.5"/>
+    <param name="laser_z_rand" value="0.4"/> -->
     <param name="laser_sigma_hit" value="0.2"/>
     <param name="laser_lambda_short" value="0.1"/>
     <!-- Maximum distance to do obstacle inflation on map, for use in likelihood_field model. -->
-    <param name="laser_likelihood_max_dist" value="2.0"/>
-    <param name="laser_model_type" value="likelihood_field"/>
-
+    <param name="laser_likelihood_max_dist" value="2.0"/> # default: 2.0
 
     <!-- ODOMETRY MODEL PARAMETERS -->
+    <!-- see page 102 for an explanation of each: -->
+    <!-- https://www.ikg.uni-hannover.de/fileadmin/ikg/staff/thesis/finished/documents/ma_gangl.pdf -->
+    <!-- ODOMETRY MODEL PARAMETERS -->
     <param name="odom_model_type" value="diff"/>
-    <param name="odom_alpha1" value="0.2"/>
-    <param name="odom_alpha2" value="0.2"/>
+    <param name="odom_alpha1" value="2.0"/>
+    <param name="odom_alpha2" value="2.0"/>
     <!-- translation std dev, m -->
-    <param name="odom_alpha3" value="0.2"/>
-    <param name="odom_alpha4" value="0.2"/>
+    <param name="odom_alpha3" value="2.0"/>
+    <param name="odom_alpha4" value="2.0"/>
     <!-- THIS IS NOT USED WHEN ODOM_MODEL_TYPE IS DIFF -->
     <!-- <param name="odom_alpha5" value="0.1"/> -->
 
