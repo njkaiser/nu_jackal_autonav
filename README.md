@@ -51,6 +51,6 @@ or sudo apt-get _
 
 
 <!-- File Locations -->
-[1]: https://github.com/njkaiser/Winter_Project/meidia/navigating_laser_only.gif
+[1]: https://github.com/njkaiser/Winter_Project/media/navigating_laser_only.gif
 [2]: https://www.clearpathrobotics.com/jackal-small-unmanned-ground-vehicle/
 [3]: http://velodynelidar.com/vlp-16.html
