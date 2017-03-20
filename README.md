@@ -1,4 +1,4 @@
-Winter Quarter Project: Autonomous Navigation
+Autonomous Navigation Project
 ==============
 ### Using a Clearpath Jackal UGV and the ROS Navigation Stack
 
