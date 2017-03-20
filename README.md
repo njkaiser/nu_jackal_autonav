@@ -1,6 +1,6 @@
 Autonomous Navigation Project
 ==============
-### Using a Clearpath Jackal UGV and the ROS Navigation Stack
+### using a Clearpath Jackal UGV and the ROS Navigation Stack
 
 #### *Nate Kaiser -- MS in Robotics Winter Quarter Project -- Northwestern University*
 
