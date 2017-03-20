@@ -235,4 +235,25 @@
   <VLP-16 parent="front_mount" name="velodyne" topic="/velodyne_points">
     <origin xyz="0 0 0.049" rpy="0 0 0" />
   </VLP-16>
+
+  <!-- Velodyne mount stuff -->
+  <link name="velodyne_mount">
+    <visual>
+      <origin xyz="0 0 -0.037" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="package://winter_project/urdf/velodyne_mount.STL"/>
+      </geometry>
+      <material name="aluminum" >
+        <color rgba="0.45 0.45 0.45 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="velodyne_mount_joint" type="fixed">
+    <parent link="velodyne" />
+    <child link="velodyne_mount" />
+    <origin xyz="0 0 0" />
+  </joint>
+
+
 </robot>

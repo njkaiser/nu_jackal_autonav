@@ -26,7 +26,6 @@
   </include>
 
   <!-- spawn Jackal -->
-   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-        args="-urdf -model jackal -param robot_description -x 0 -y 0.3 -z 0 -R 0 -P 0 -Y 0.75" />
+   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model jackal -param robot_description -x 0 -y 0.3 -z 0 -R 0 -P 0 -Y 0.75" />
 
 </launch>
