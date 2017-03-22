@@ -1,0 +1,75 @@
+#!/bin/bash
+# THIS IS A GENERATED FILE, NOT RECOMMENDED TO EDIT.
+
+function log() {
+  logger -s -p user.$1 ${@:2}
+}
+
+log info "ros: Using workspace setup file /etc/ros/setup.bash"
+source /etc/ros/setup.bash
+JOB_FOLDER=/etc/ros/indigo/ros.d
+
+log_path="/tmp"
+if [[ ! -d $log_path ]]; then
+  CREATED_LOGDIR=true
+  trap 'CREATED_LOGDIR=false' ERR
+    log warn "ros: The log directory you specified \"$log_path\" does not exist. Attempting to create."
+    mkdir -p $log_path 2>/dev/null
+    chown administrator:administrator $log_path 2>/dev/null
+    chmod ug+wr $log_path 2>/dev/null
+  trap - ERR
+  # if log_path could not be created, default to tmp
+  if [[ $CREATED_LOGDIR == false ]]; then
+    log warn "ros: The log directory you specified \"$log_path\" cannot be created. Defaulting to \"/tmp\"!"
+    log_path="/tmp"
+  fi
+fi
+
+# COMMENTED OUT BY JARVIS AND NATE:
+#export ROS_HOSTNAME=$(hostname).local
+
+export ROS_MASTER_URI=http://127.0.0.1:11311
+
+log info "ros: Launching ROS_HOSTNAME=$ROS_HOSTNAME, ROS_IP=$ROS_IP, ROS_MASTER_URI=$ROS_MASTER_URI, ROS_LOG_DIR=$log_path"
+
+# If xacro files are present in job folder, generate and expand an amalgamated urdf.
+XACRO_FILENAME=$log_path/ros.xacro
+XACRO_ROBOT_NAME=$(echo "ros" | cut -d- -f1)
+rosrun robot_upstart mkxacro $JOB_FOLDER $XACRO_ROBOT_NAME > $XACRO_FILENAME
+if [[ "$?" == "0" ]]; then
+  URDF_FILENAME=$log_path/ros.urdf
+  rosrun xacro xacro $XACRO_FILENAME -o $URDF_FILENAME
+  if [[ "$?" == "0" ]]; then
+    log info "ros: Generated URDF: $URDF_FILENAME"
+  else
+    log warn "ros: URDF macro expansion failure. Robot description will not function."
+  fi
+  export ROBOT_URDF_FILENAME=$URDF_FILENAME
+fi
+
+# Assemble amalgamated launchfile.
+LAUNCH_FILENAME=$log_path/ros.launch
+rosrun robot_upstart mklaunch $JOB_FOLDER > $LAUNCH_FILENAME
+if [[ "$?" != "0" ]]; then
+  log err "ros: Unable to generate amalgamated launchfile."
+  exit 1
+fi
+log info "ros: Generated launchfile: $LAUNCH_FILENAME"
+
+# Warn and exit if setuidgid is missing from the system.
+which setuidgid > /dev/null
+if [ "$?" != "0" ]; then
+  log err "ros: Can't launch as unprivileged user without setuidgid. Please install daemontools package."
+  exit 1
+fi
+
+# Punch it.
+export ROS_HOME=$(echo ~administrator)/.ros
+export ROS_LOG_DIR=$log_path
+setuidgid administrator roslaunch $LAUNCH_FILENAME &
+PID=$!
+
+log info "ros: Started roslaunch as background process, PID $PID, ROS_LOG_DIR=$ROS_LOG_DIR"
+echo "$PID" > $log_path/ros.pid
+
+wait "$PID"
