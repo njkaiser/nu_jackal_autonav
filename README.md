@@ -31,7 +31,7 @@ sudo apt-get update
 sudo apt-get install ros-indigo-velodyne ros-indigo-velodyne-description ros-indigo-velodyne-simulator ros-indigo-jackal-desktop ros-indigo-jackal-gazebo
 ```
 
-Alternatively, I hope to clean everything up and have `rosdep install name-of-package` functioning properly in the near future.
+Alternatively, I hope to clean everything up and have `rosdep install name-of-package` functioning properly in the near future. **Important Note:** you may need to install `ros-indigo-velodyne` from source, per instructions [here][14] and [here][15], although installing from apt-get seems to be fully functioning when I last checked.
 
 This will need to be done on both the host computer and Jackal's on-board computer, but Jackal should already have `ros-indigo-jackal-desktop` installed, and has no need for `ros-indigo-jackal-gazebo`, since Gazebo simulations will only be run on the host computer (though accidentally installing it won't hurt anything).
 
