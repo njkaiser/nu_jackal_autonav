@@ -11,10 +11,10 @@
   <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
 
   <!-- FILTER OUT POINTS NOT NEAR GROUND LEVEL -->
-  <node pkg="nodelet" type="nodelet" name="floor_cropbox" args="load pcl/CropBox pcl_manager" output="screen">
+  <!-- <node pkg="nodelet" type="nodelet" name="floor_cropbox" args="load pcl/CropBox pcl_manager" output="screen">
     <remap from="~input" to="/velodyne_points" />
     <remap from="~output" to="/velodyne_floor/cropbox" />
-    <rosparam>
+    <rosparam> -->
 <!-- min_x: "$(eval -4.0 - arg('x_offset'))"
 max_x: "$(eval 4.0 - arg('x_offset'))"
 min_y: "$(eval -4.0 - arg('y_offset'))"
@@ -25,7 +25,7 @@ max_z: "$(eval 0.1 - arg('z_offset'))" -->
 <!-- TO CLARIFY, THEY WORKED, BUT THE LIMITS CLEARLY WERE WRONG -->
 <!-- DIDN'T FEEL LIKE TROUBLESHOOTING AT THE MOMENT -->
 
-      min_x: -4.12
+      <!-- min_x: -4.12
       max_x: 3.88
       min_y: -4.0
       max_y: 4.0
@@ -33,7 +33,7 @@ max_z: "$(eval 0.1 - arg('z_offset'))" -->
       max_z: -0.238
 
     </rosparam>
-  </node>
+  </node> -->
 
 
   <!-- # remove statistical outliers
@@ -64,7 +64,7 @@ max_z: "$(eval 0.1 - arg('z_offset'))" -->
 
 
   <!-- start node hack to eliminate z-offset drift between odom and base_link -->
-  <node pkg="nu_jackal_autonav" type="ground_plane_cheat" name="ground_plane_cheat" output="screen" />
+  <!-- <node pkg="nu_jackal_autonav" type="ground_plane_cheat" name="ground_plane_cheat" output="screen" /> -->
 
   <!-- now, create new subset of pointcloud to use for costmap -->
   <!-- filter out points too high, too low, or too far away -->
