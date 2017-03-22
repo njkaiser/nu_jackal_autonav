@@ -1,35 +1,19 @@
 <launch>
 
-  <!-- ADDED: -->
-  <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find nu_jackal_autonav)/maps/tutorial_map.yaml"/> -->
-
-  <!-- <node pkg="nodelet" type="nodelet" name="single_laser" args="load pointcloud_to_laserscan/CloudToScan velodyne_points"> -->
-   <!-- <param name="output_frame_id" value="/velodyne_points"/> -->
-   <!-- <param name="output_frame_id" value="/base_link"/> -->
-   <!-- <remap from="cloud_in" to="velodyne_points"/> -->
-   <!-- <remap from="cloud" to="scan"/> -->
- <!-- </node> -->
-
-  <!-- <arg name="scan_topic" default="front/scan" /> -->
-  <!-- <arg name="scan_topic" default="scan" /> -->
   <arg name="scan_topic" default="emulated_scan" />
 
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
 
-    <!-- <param name="odom_frame" value="odom"/> -->
     <param name="odom_frame" value="odom_corrected"/>
     <param name="base_frame" value="base_link"/>
     <param name="map_frame" value="map"/>
 
     <!-- Process 1 out of every this many scans (set it to a higher number to skip more scans) -->
     <param name="throttle_scans" value="2"/>
-    <!-- <param name="throttle_scans" value="5"/> -->
 
     <param name="map_update_interval" value="5.0"/> <!-- default: 5.0 -->
 
     <!-- The maximum usable range of the laser. A beam is cropped to this value.  -->
-    <!-- DON'T KNOW WHY THEY HAD THIS IN TWICE, I DIDN'T CHANGE THE VALUE -->
-    <!-- <param name="maxUrange" value="5.0"/> -->
     <param name="maxUrange" value="10.0"/>
 
     <!-- The maximum range of the sensor. If regions with no obstacles within the range of the sensor should appear as free space in the map, set maxUrange < maximum range of the real sensor <= maxRange -->
