@@ -50,11 +50,11 @@ This requires Jackal to be set up and connected to the internet. For help with t
 ## Instructions For Use
 Navigate to your workspace and source your setup file: `source devel/setup.bash`. If you're running on the real robot, skip step 1, as it just launches the robot simulation. Choose only one of steps 3, 4, or 5, depending on what you want to do.
 
-1. `roslaunch winter_project simulate.launch`
+1. `roslaunch nu_jackal_autonav simulate.launch`
 
     This loads a URDF of Northwestern's Jackal configuration to the parameter server, starts up a Gazebo session with Clearpath's tutorial map, and spawns Jackal into it. By default, no GUI is shown, but can be shown by appending `gui:=true` to the end of the roslaunch command. See the beginning of the launch file for other helpful command line arguments.
 
-2. `roslaunch winter_project ground_plane.launch`
+2. `roslaunch nu_jackal_autonav ground_plane.launch`
 
     This command eliminates the z drift between the `odom` and `base_link` frames and starts a nodelet manager to handle all of the pointcloud filtering. The outputs are a new `tf` frame named `odom_corrected` and a cascaded series of new pointcloud topics, the important one being `/velodyne_points/for_costmap`. The individual filters are:
     - a cropbox to eliminate any points further than 4 meters from Jackal in the x- and y-directions, and any points below 0.0 or above 0.4 meters in z
@@ -62,19 +62,19 @@ Navigate to your workspace and source your setup file: `source devel/setup.bash`
     - a voxel grid downsampler
     - a custom filter which eliminates any points too close to the robot or within 1.5&deg; of the ground
 
-3. `roslaunch winter_project odom_navigation_demo.launch`
+3. `roslaunch nu_jackal_autonav odom_navigation_demo.launch`
 
     This node is similar to the file in the `jackal_navigation` package with the same name. This puts Jackal in pure odometric navigation mode. Under the hood it just runs `move_base` and loads the correct parameters from yaml files stored in the `params` directory. All you have to do is send Jackal goal poses using RViz and watch as it navigates there autonomously.
 
-4. `roslaunch winter_project gmapping_demo.launch`
+4. `roslaunch nu_jackal_autonav gmapping_demo.launch`
 
     Again, this is similar to its `jackal_navigation` counterpart. It starts `gmapping` and a `pointcoud_to_laserscan` node (since `gmapping` needs a `LaserScan` topic to function). Run this to make a map of whatever environment(s) Jackal will be navigating in. Drive around using the joystick controller until you're satisfied with the costmap (viewable via RViz). Only 1 map is needed for each environment. Also, please note you'll need to save the map once you're satisfied with it by running `rosrun map_server map_saver -f map-name-goes-here` in a separate terminal.
 
-5. `roslaunch winter_project amcl_demo.launch`
+5. `roslaunch nu_jackal_autonav amcl_demo.launch`
 
     This is the heart of Jackal's navigational capabilities. When working correctly, this node estimates the robot's pose in the map. The launch file starts [AMCL][8] and `pointcoud_to_laserscan` (AMCL also needs a LaserScan topic). You'll need to modify the `map_file` parameter to point to the map you created in the last step (preferably stored in `maps` directory).
 
-6. `roslaunch winter_project view_rviz.launch`
+6. `roslaunch nu_jackal_autonav view_rviz.launch`
 
     This runs one of two RViz sessions. If you're running `gmapping_demo` or `amcl_demo`, you'll need to append `config:=amcl` to the launch command. With this running, you can:
     - send a pose estimate to `AMCL`
@@ -107,7 +107,7 @@ I'm also working on an RViz plugin for canceling navigation goals, but haven't h
 
 
 <!-- File Locations -->
-[1]: https://github.com/njkaiser/Winter_Project/blob/master/media/navigating_laser_only.gif
+[1]: https://github.com/njkaiser/nu_jackal_autonav/blob/master/media/navigating_laser_only.gif
 [2]: https://www.clearpathrobotics.com/jackal-small-unmanned-ground-vehicle/
 [3]: http://velodynelidar.com/vlp-16.html
 [4]: http://wiki.ros.org/global_planner?distro=indigo
@@ -115,8 +115,8 @@ I'm also working on an RViz plugin for canceling navigation goals, but haven't h
 [6]: http://wiki.ros.org/gmapping?distro=indigo
 [7]: http://wiki.ros.org/hector_slam?distro=indigo
 [8]: http://wiki.ros.org/amcl?distro=indigo
-[9]: https://github.com/njkaiser/Winter_Project
+[9]: https://github.com/njkaiser/nu_jackal_autonav
 [10]: https://www.clearpathrobotics.com/assets/guides/jackal/network.html
 [11]: https://catkin-tools.readthedocs.io/en/latest/
-[12]: https://github.com/njkaiser/Winter_Project/blob/master/launch/include/move_base.launch#L26
+[12]: https://github.com/njkaiser/nu_jackal_autonav/blob/master/launch/include/move_base.launch#L26
 [13]: http://wiki.ros.org/dwa_local_planner

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(winter_project)
+project(nu_jackal_autonav)
 
 # add_definitions(-std=c++11) THIS WAS CAUSING SEGFAULT WITH CERTAIN PCL STUFF
 
@@ -132,7 +132,7 @@ find_package(PkgConfig REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES winter_project
+#  LIBRARIES nu_jackal_autonav
 #  CATKIN_DEPENDS roscpp rospy
 #  DEPENDS system_lib
 )
@@ -150,8 +150,8 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(winter_project
-#   src/${PROJECT_NAME}/winter_project.cpp
+# add_library(nu_jackal_autonav
+#   src/${PROJECT_NAME}/nu_jackal_autonav.cpp
 # )
 
 add_library(custom_planner_lib src/custom_planner.cpp)
@@ -164,17 +164,17 @@ target_link_libraries(custom_planner_lib ${catkin_LIBRARIES})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(winter_project ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(nu_jackal_autonav ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(winter_project_node src/winter_project_node.cpp)
+# add_executable(nu_jackal_autonav src/nu_jackal_autonav_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(winter_project_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(nu_jackal_autonav_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(winter_project_node
+# target_link_libraries(nu_jackal_autonav_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -193,7 +193,7 @@ target_link_libraries(custom_planner_lib ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS winter_project winter_project_node
+# install(TARGETS nu_jackal_autonav nu_jackal_autonav_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -218,7 +218,7 @@ target_link_libraries(custom_planner_lib ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_winter_project.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_nu_jackal_autonav.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

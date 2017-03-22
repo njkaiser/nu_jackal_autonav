@@ -1,7 +1,7 @@
 <launch>
 
   <!-- ADDED: -->
-  <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find winter_project)/maps/tutorial_map.yaml"/> -->
+  <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find nu_jackal_autonav)/maps/tutorial_map.yaml"/> -->
 
   <!-- <node pkg="nodelet" type="nodelet" name="single_laser" args="load pointcloud_to_laserscan/CloudToScan velodyne_points"> -->
    <!-- <param name="output_frame_id" value="/velodyne_points"/> -->

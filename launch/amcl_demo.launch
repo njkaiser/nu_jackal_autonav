@@ -1,10 +1,10 @@
 <launch>
 
-   <!-- <arg name="map_file" default="$(find winter_project)/maps/tutorial_map.yaml"/> -->
-   <arg name="map_file" default="$(find winter_project)/maps/D110.yaml"/>
+   <!-- <arg name="map_file" default="$(find nu_jackal_autonav)/maps/tutorial_map.yaml"/> -->
+   <arg name="map_file" default="$(find nu_jackal_autonav)/maps/D110.yaml"/>
 
    <!-- a LaserScan topic is required for AMCL -->
-   <include file="$(find winter_project)/launch/pointcloud_to_laserscan.launch" />
+   <include file="$(find nu_jackal_autonav)/launch/pointcloud_to_laserscan.launch" />
 
    <!-- Run the map server -->
    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
@@ -14,10 +14,10 @@
    </node>
 
     <!--- Run AMCL -->
-   <include file="$(find winter_project)/launch/include/amcl.launch" />
+   <include file="$(find nu_jackal_autonav)/launch/include/amcl.launch" />
 
     <!--- Run Move Base -->
-   <include file="$(find winter_project)/launch/include/move_base.launch" >
+   <include file="$(find nu_jackal_autonav)/launch/include/move_base.launch" >
     <remap from="cmd_vel" to="move_base/cmd_vel" />
    </include>
 

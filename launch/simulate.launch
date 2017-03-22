@@ -1,6 +1,6 @@
 <launch>
 
-  <!-- <arg name="config" default="winter_project"/> -->
+  <!-- <arg name="config" default="nu_jackal_autonav"/> -->
   <arg name="gui" default="false"/>
   <arg name="headless" default="true"/>
   <arg name="scene" default="$(find jackal_gazebo)/worlds/jackal_race.world" />
@@ -16,7 +16,7 @@
 
   <!-- load URDF of custom jackal configuration -->
   <param name="robot_description" command="$(find xacro)/xacro
-    $(find winter_project)/urdf/jackal.urdf.xacro" />
+    $(find nu_jackal_autonav)/urdf/jackal.urdf.xacro" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
   <!-- any way around this? I'm literally copying the clearpath launch files... -->

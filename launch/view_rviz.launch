@@ -4,7 +4,7 @@
   <arg name="config" default="view_model" />
 
   <!-- start RVIZ -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find winter_project)/rviz/$(arg config).rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nu_jackal_autonav)/rviz/$(arg config).rviz" />
 
   <node name="voxel_grid_2_point_cloud" pkg="costmap_2d" type="costmap_2d_cloud">
     <remap from="voxel_layer" to="/move_base/local_costmap/obstacles_layer/voxel_grid"/>

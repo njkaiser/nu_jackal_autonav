@@ -64,7 +64,7 @@ max_z: "$(eval 0.1 - arg('z_offset'))" -->
 
 
   <!-- start node hack to eliminate z-offset drift between odom and base_link -->
-  <node pkg="winter_project" type="ground_plane_cheat" name="ground_plane_cheat" output="screen" />
+  <node pkg="nu_jackal_autonav" type="ground_plane_cheat" name="ground_plane_cheat" output="screen" />
 
   <!-- now, create new subset of pointcloud to use for costmap -->
   <!-- filter out points too high, too low, or too far away -->
@@ -105,6 +105,6 @@ max_z: "$(eval 0.1 - arg('z_offset'))" -->
   </node>
 
   <!-- custom node to filter out groundplane -->
-  <node pkg="winter_project" type="conical_filter" name="conical_filter" output="screen" />
+  <node pkg="nu_jackal_autonav" type="conical_filter" name="conical_filter" output="screen" />
 
 </launch>

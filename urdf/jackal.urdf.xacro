@@ -241,7 +241,7 @@
     <visual>
       <origin xyz="0 0 -0.037" rpy="0.0 0.0 0.0" />
       <geometry>
-        <mesh filename="package://winter_project/urdf/velodyne_mount.STL"/>
+        <mesh filename="package://nu_jackal_autonav/urdf/velodyne_mount.STL"/>
       </geometry>
       <material name="aluminum" >
         <color rgba="0.45 0.45 0.45 1"/>

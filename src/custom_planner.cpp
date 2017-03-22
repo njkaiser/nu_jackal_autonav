@@ -1,4 +1,4 @@
-#include "winter_project/custom_planner.h"
+#include "nu_jackal_autonav/custom_planner.h"
 
 // copied from DWA planner:
 // #include <dwa_local_planner/dwa_planner_ros.h> //this is now custom_planner.h
