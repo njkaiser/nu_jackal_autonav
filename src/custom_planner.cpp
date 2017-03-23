@@ -119,9 +119,8 @@ namespace custom_planner
     cout << "current pose: (" << current_pose_.getOrigin().getX() << ' ' << current_pose_.getOrigin().getY() << ' ' << tf::getYaw(current_pose_.getRotation()) << ")" << endl;
 
     // THIS IS THE LINE THAT WAS REQUIRED TO GET THINGS TO WORK, CAN'T FAKE IT OUT WITH "true" OR "false"
-    return planner_util_.setPlan(orig_global_plan);
-
     // cout << "setPlan() function ended" << endl;
+    return planner_util_.setPlan(orig_global_plan);
   }
 
 
@@ -159,7 +158,7 @@ namespace custom_planner
   // given the current position, orientation, and velocity of the robot, compute velocity commands to send to the base
   bool CustomPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)
   {
-    // cout << "computeVelocityCommands() function called" << endl;
+    cout << "computeVelocityCommands() function called" << endl;
 
     // dispatches to either dwa sampling control or stop and rotate control, depending on whether we are close enough to goal
     if(!already_initialized)
@@ -209,6 +208,7 @@ namespace custom_planner
       //   odom_helper_,
       //   current_pose_,
       //   boost::bind(&DWAPlanner::checkTrajectory, dp_, _1, _2, _3));
+      cout << "LatchedStopRotateController was true, not going to set cmd_vel" << endl;
       return true; // just getting this to work for now, fill in later
     }
     else
@@ -252,6 +252,7 @@ namespace custom_planner
         // cmd_vel.angular.z = tf::getYaw(drive_cmds.getRotation());
 
         // MY VERSION
+        // cout << "made it to setting vel" << endl;
         cmd_vel.linear.x = 0.0;
         cmd_vel.angular.z = 0.2;
 
@@ -286,17 +287,17 @@ namespace custom_planner
       // } // END OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
       //
       //
-      // // bool isOk = true; // just getting this to work for now, fill in later
-      // if(isOk)
-      // {
-      //   publishGlobalPlan(transformed_plan);
-      // }
-      // else
-      // {
-      //   ROS_WARN_NAMED("custom_planner", "Custom planner failed to produce path.");
-      //   std::vector<geometry_msgs::PoseStamped> empty_plan;
-      //   publishGlobalPlan(empty_plan);
-      // }
+      isOk = true; // just getting this to work for now, fill in later
+      if(isOk)
+      {
+        publishGlobalPlan(transformed_plan);
+      }
+      else
+      {
+        ROS_WARN_NAMED("custom_planner", "Custom planner failed to produce path.");
+        std::vector<geometry_msgs::PoseStamped> empty_plan;
+        publishGlobalPlan(empty_plan);
+      }
       //
       // // hack to get it to work:
       // // out = geometry_msgs::Twist();
