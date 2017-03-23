@@ -1,4 +1,4 @@
-#include "nu_jackal_autonav/custom_planner.h"
+#include "nu_jackal_autonav/custom_planner.hpp"
 
 // copied from DWA planner:
 // #include <dwa_local_planner/dwa_planner_ros.h> //this is now custom_planner.h
@@ -217,7 +217,7 @@ namespace custom_planner
       // bool isOk = dwaComputeVelocityCommands(current_pose_, cmd_vel);
       // START OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
       bool isOk;
-      { // THESE BRACKETS AREN'T NECESSARY, BUT LEAVING THEM FOR ORGANIZATION
+      // { // THESE BRACKETS AREN'T NECESSARY, BUT LEAVING THEM FOR ORGANIZATION
         // dynamic window sampling approach to get useful velocity commands
         tf::Stamped<tf::Pose> robot_vel;
         odom_helper_.getRobotVel(robot_vel);
@@ -235,8 +235,8 @@ namespace custom_planner
         // call with updated footprint
         // base_local_planner::Trajectory path = dp_->findBestPath(current_pose_, robot_vel, drive_cmds, costmap_ros_->getRobotFootprint());
         //ROS_ERROR("Best: %.2f, %.2f, %.2f, %.2f", path.xv_, path.yv_, path.thetav_, path.cost_);
-        base_local_planner::Trajectory path(0.0, 0.0, 0.0, 0.02, 10);
-        path.cost_ = 9.99;
+        // base_local_planner::Trajectory path(0.0, 0.0, 0.0, 0.02, 10);
+        // path.cost_ = 9.99;
 
         /* For timing uncomment
         gettimeofday(&end, NULL);
@@ -252,78 +252,77 @@ namespace custom_planner
         // cmd_vel.angular.z = tf::getYaw(drive_cmds.getRotation());
 
         // MY VERSION
-        cmd_vel.linear.x = 0.5;
-        // cmd_vel.linear.y = drive_cmds.getOrigin().getY(); <<< THIS IS NOT NEEDED SINCE ROBOT CAN'T DRIVE SIDEWAYS
-        cmd_vel.angular.z = 0;
+        cmd_vel.linear.x = 0.0;
+        cmd_vel.angular.z = 0.2;
 
         // if we cannot move... tell someone
-        std::vector<geometry_msgs::PoseStamped> local_plan;
-        if(path.cost_ < 0)
-        {
-          ROS_DEBUG_NAMED("dwa_local_planner", "The dwa local planner failed to find a valid plan, cost functions discarded all candidates. This can mean there is an obstacle too close to the robot.");
-          local_plan.clear();
-          publishLocalPlan(local_plan);
-          isOk = false;
-        }
-
-        ROS_DEBUG_NAMED("dwa_local_planner", "A valid velocity command of (%.2f, %.2f, %.2f) was found for this cycle.", cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z);
-
-        // Fill out the local plan
-        for(unsigned int i = 0; i < path.getPointsSize(); ++i)
-        {
-          double p_x, p_y, p_th;
-          path.getPoint(i, p_x, p_y, p_th);
-
-          tf::Stamped<tf::Pose> p = tf::Stamped<tf::Pose>(tf::Pose(tf::createQuaternionFromYaw(p_th), tf::Point(p_x, p_y, 0.0)), ros::Time::now(), costmap_ros_->getGlobalFrameID());
-
-          geometry_msgs::PoseStamped pose;
-          tf::poseStampedTFToMsg(p, pose);
-          local_plan.push_back(pose);
-        }
-
-        //publish information to the visualizer
-        publishLocalPlan(local_plan);
-        isOk = true;
-      } // END OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
-
-
-      // bool isOk = true; // just getting this to work for now, fill in later
-      if(isOk)
-      {
-        publishGlobalPlan(transformed_plan);
-      }
-      else
-      {
-        ROS_WARN_NAMED("custom_planner", "Custom planner failed to produce path.");
-        std::vector<geometry_msgs::PoseStamped> empty_plan;
-        publishGlobalPlan(empty_plan);
-      }
-
-      // hack to get it to work:
-      // out = geometry_msgs::Twist();
-      // out.linear.x = 1.0;
-      // out.linear.y = 0.0;
-      // out.linear.z = 0.0;
-      // out.angular.x = 0.0;
-      // out.angular.y = 0.0;
-      // out.angular.z = 1.0;
-
-      // Fill out the local plan
-      std::vector<geometry_msgs::PoseStamped> local_plan;
-      // for(int i = 0; i < path.getPointsSize(); ++i)
+      //   std::vector<geometry_msgs::PoseStamped> local_plan;
+      //   if(path.cost_ < 0)
+      //   {
+      //     ROS_DEBUG_NAMED("dwa_local_planner", "The dwa local planner failed to find a valid plan, cost functions discarded all candidates. This can mean there is an obstacle too close to the robot.");
+      //     local_plan.clear();
+      //     publishLocalPlan(local_plan);
+      //     isOk = false;
+      //   }
+      //
+      //   ROS_DEBUG_NAMED("dwa_local_planner", "A valid velocity command of (%.2f, %.2f, %.2f) was found for this cycle.", cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z);
+      //
+      //   // Fill out the local plan
+      //   for(unsigned int i = 0; i < path.getPointsSize(); ++i)
+      //   {
+      //     double p_x, p_y, p_th;
+      //     path.getPoint(i, p_x, p_y, p_th);
+      //
+      //     tf::Stamped<tf::Pose> p = tf::Stamped<tf::Pose>(tf::Pose(tf::createQuaternionFromYaw(p_th), tf::Point(p_x, p_y, 0.0)), ros::Time::now(), costmap_ros_->getGlobalFrameID());
+      //
+      //     geometry_msgs::PoseStamped pose;
+      //     tf::poseStampedTFToMsg(p, pose);
+      //     local_plan.push_back(pose);
+      //   }
+      //
+      //   //publish information to the visualizer
+      //   publishLocalPlan(local_plan);
+      //   isOk = true;
+      // } // END OF MODIFIED DWAPlannerROS::dwaComputeVelocityCommands
+      //
+      //
+      // // bool isOk = true; // just getting this to work for now, fill in later
+      // if(isOk)
       // {
-        tf::Stamped<tf::Pose> p =
-        tf::Stamped<tf::Pose>(tf::Pose(
-          tf::createQuaternionFromYaw(0.0),
-          tf::Point(0.0, 0.0, 0.0)),
-          ros::Time::now(),
-          costmap_ros_->getGlobalFrameID());
-          geometry_msgs::PoseStamped pose;
-          tf::poseStampedTFToMsg(p, pose);
-          local_plan.push_back(pose);
+      //   publishGlobalPlan(transformed_plan);
       // }
-      // publish information to the visualizer
-      publishLocalPlan(local_plan);
+      // else
+      // {
+      //   ROS_WARN_NAMED("custom_planner", "Custom planner failed to produce path.");
+      //   std::vector<geometry_msgs::PoseStamped> empty_plan;
+      //   publishGlobalPlan(empty_plan);
+      // }
+      //
+      // // hack to get it to work:
+      // // out = geometry_msgs::Twist();
+      // // out.linear.x = 1.0;
+      // // out.linear.y = 0.0;
+      // // out.linear.z = 0.0;
+      // // out.angular.x = 0.0;
+      // // out.angular.y = 0.0;
+      // // out.angular.z = 1.0;
+      //
+      // // Fill out the local plan
+      // std::vector<geometry_msgs::PoseStamped> local_plan;
+      // // for(int i = 0; i < path.getPointsSize(); ++i)
+      // // {
+      //   tf::Stamped<tf::Pose> p =
+      //   tf::Stamped<tf::Pose>(tf::Pose(
+      //     tf::createQuaternionFromYaw(0.0),
+      //     tf::Point(0.0, 0.0, 0.0)),
+      //     ros::Time::now(),
+      //     costmap_ros_->getGlobalFrameID());
+      //     geometry_msgs::PoseStamped pose;
+      //     tf::poseStampedTFToMsg(p, pose);
+      //     local_plan.push_back(pose);
+      // // }
+      // // publish information to the visualizer
+      // publishLocalPlan(local_plan);
 
       return isOk;
     }

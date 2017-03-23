@@ -21,7 +21,7 @@
 #include <tf/transform_listener.h>
 
 // #include <dynamic_reconfigure/server.h>
-#include <dwa_local_planner/DWAPlannerConfig.h>
+// #include <dwa_local_planner/DWAPlannerConfig.h>
 
 #include <angles/angles.h>
 
@@ -32,7 +32,7 @@
 #include <base_local_planner/latched_stop_rotate_controller.h>
 #include <base_local_planner/odometry_helper_ros.h>
 
-#include <dwa_local_planner/dwa_planner.h>
+// #include <dwa_local_planner/dwa_planner.h>
 
 
 
