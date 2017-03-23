@@ -15,8 +15,9 @@
     <rosparam file="$(find nu_jackal_autonav)/params/move_base_params.yaml" command="load" />
 
     <!-- ALL OF THE GLOBAL PLUGINS I HAVE (choose 1) -->
-    <!-- <param name="base_global_planner" type="string" value="navfn/NavfnROS" /> -->
-    <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <!-- JACKAL DOES NOT HAVE global_planner/GlobalPlanner installed RIGHT NOW, DEAL WITH THAT LATER -->
+    <!-- <param name="base_global_planner" value="global_planner/GlobalPlanner" /> -->
     <!-- <param name="base_global_planner" value="carrot_planner/CarrotPlanner"/> -->
 
     <!-- ALL OF THE LOCAL PLUGINS I HAVE (choose 1) -->

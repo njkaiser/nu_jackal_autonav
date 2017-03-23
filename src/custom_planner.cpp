@@ -158,7 +158,7 @@ namespace custom_planner
   // given the current position, orientation, and velocity of the robot, compute velocity commands to send to the base
   bool CustomPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)
   {
-    cout << "computeVelocityCommands() function called" << endl;
+    // cout << "computeVelocityCommands() function called" << endl;
 
     // dispatches to either dwa sampling control or stop and rotate control, depending on whether we are close enough to goal
     if(!already_initialized)
