@@ -1,6 +1,7 @@
 <launch>
 
-  <include file="$(find nu_jackal_autonav)/launch/pointcloud_to_laserscan.launch" />
+  <!-- MAKING THIS STANDALONE NOW -->
+  <!-- <include file="$(find nu_jackal_autonav)/launch/pointcloud_to_laserscan.launch" /> -->
 
   <include file="$(find nu_jackal_autonav)/launch/include/move_base.launch">
     <arg name="local_costmap_dir" value="params/odom_nav_params/local_costmap_params.yaml" />

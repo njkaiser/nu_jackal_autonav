@@ -1,7 +1,8 @@
 <launch>
 
+  <!-- MAKING THIS STANDALONE NOW -->
   <!-- LaserScan topic required for gmapping -->
-  <include file="$(find nu_jackal_autonav)/launch/pointcloud_to_laserscan.launch" />
+  <!-- <include file="$(find nu_jackal_autonav)/launch/pointcloud_to_laserscan.launch" /> -->
 
   <!--- Run gmapping -->
   <include file="$(find nu_jackal_autonav)/launch/include/gmapping.launch" />
