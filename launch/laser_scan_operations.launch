@@ -37,10 +37,10 @@
     <remap from="laser" to="velodyne"/>
 
     <!-- outputs -->
-    <param name="publish_tf" value="false"/> # true causes tf issues
+    <param name="publish_tf" value="false"/> # true causes issues
     <param name="publish_pose" value="true"/>
-    <remap from="pose2D" to="scan_matcher_pose_estimate"/>
-    <!-- <remap from="odom_out" to="/laser_scan_matcher/odom"/> -->
+    <remap from="pose2D" to="LaserScan/pose2D"/>
+    <!-- <remap from="odom_out" to="LaserScan/odom"/> -->
 
     <!-- motion prediction for faster convergence -->
     <param name="use_imu" value="true"/>
@@ -52,5 +52,8 @@
     <param name="kf_dist_linear" value="0.05"/>
     <param name="kf_dist_angular" value="0.1"/>
   </node>
+
+  <!-- this node just converts the above Pose2D estimate to an odom topic for use in EKF -->
+  <node pkg="nu_jackal_autonav" type="pose2D_to_odometry.py" name="Pose2D_to_Odometry" output="screen"/>
 
 </launch>
