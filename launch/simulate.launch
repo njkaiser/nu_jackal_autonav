@@ -14,8 +14,7 @@
   </include>
 
   <!-- load URDF of custom jackal configuration -->
-  <param name="robot_description" command="$(find xacro)/xacro
-    $(find nu_jackal_autonav)/urdf/jackal.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro $(find nu_jackal_autonav)/urdf/jackal.urdf.xacro" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
   <!-- launch Jackal control nodes -->
@@ -28,6 +27,9 @@
   <include file="$(find nu_jackal_autonav)/launch/twist_mux.launch" />
 
   <!-- spawn Jackal -->
-   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model jackal -param robot_description -x 0 -y 0.3 -z 0 -R 0 -P 0 -Y 0.75" />
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model jackal -param robot_description -x 0 -y 0.3 -z 0 -R 0 -P 0 -Y 0.75" />
 
+  <!-- start node hack to eliminate z-offset drift between odom and base_link -->
+  <node pkg="nu_jackal_autonav" type="ground_plane_cheat" name="ground_plane_cheat" output="screen" />
+  
 </launch>

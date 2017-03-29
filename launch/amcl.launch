@@ -1,21 +1,22 @@
 <launch>
 
-   <!-- <arg name="map_file" default="$(find nu_jackal_autonav)/maps/tutorial_map.yaml"/> -->
-   <arg name="map_file" default="$(find nu_jackal_autonav)/maps/D110.yaml"/>
+  <!-- UNCOMMENT THE RELEVANT MAP -->
+  <!-- <arg name="map_file" default="D110_1.yaml"/> -->
+  <!-- <arg name="map_file" default="D110_2.yaml"/> -->
+  <!-- <arg name="map_file" default="D110_3.yaml"/> -->
+  <!-- <arg name="map_file" default="D110_4.yaml"/> -->
+  <!-- <arg name="map_file" default="boxed_in.yaml/> -->
+  <arg name="map_file" default="tutorial_map.yaml"/>
 
-   <!-- Run the map server -->
-   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
-    <!-- <rosparam>
-      frame_id: odom_corrected #default is "map"
-    </rosparam> -->
-   </node>
+  <!-- run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find nu_jackal_autonav)/maps/$(arg map_file)" />
 
-    <!--- Run AMCL -->
-   <include file="$(find nu_jackal_autonav)/launch/include/amcl_core.launch" />
+  <!-- run AMCL -->
+  <include file="$(find nu_jackal_autonav)/launch/include/core_amcl.launch" />
 
-    <!--- Run Move Base -->
-   <include file="$(find nu_jackal_autonav)/launch/include/move_base_core.launch" >
+  <!-- run move_base -->
+  <include file="$(find nu_jackal_autonav)/launch/include/core_move_base.launch" >
     <remap from="cmd_vel" to="move_base/cmd_vel" />
-   </include>
+  </include>
 
 </launch>

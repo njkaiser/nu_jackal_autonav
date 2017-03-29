@@ -61,7 +61,7 @@ private:
     // grab necessary info for processing
     width = input->width;
     s = input->point_step; // store as variable since we use this later
-    std::cout << "number of points in  input cloud: " << width << std::endl;
+    // std::cout << "number of points in  input cloud: " << width << std::endl;
 
     // fill new pointcloud with matching data from old
     cloud_filtered->header = input->header;
@@ -100,7 +100,7 @@ private:
         ++new_width; // increment # of new data points
       }
     }
-    std::cout << "number of points in output cloud: " << new_width << std::endl;
+    // std::cout << "number of points in output cloud: " << new_width << std::endl;
     cloud_filtered->width = new_width;
     cloud_filtered->row_step = new_width * s; // # points * length of point
 

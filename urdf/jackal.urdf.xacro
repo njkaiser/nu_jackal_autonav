@@ -233,7 +233,7 @@
   <!-- Velodyne URDF, plugin, etc -->
   <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="front_mount" name="velodyne" topic="/velodyne_points">
-    <origin xyz="0 0 0.049" rpy="0 0 0" />
+    <origin xyz="0 0 0.052" rpy="0 0 0" />
   </VLP-16>
 
   <!-- Velodyne mount stuff -->
@@ -241,7 +241,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
       <geometry>
-        <mesh filename="package://nu_jackal_autonav/urdf/velodyne_mount.STL"/>
+        <mesh filename="package://nu_jackal_autonav/urdf/velodyne_mount.stl"/>
       </geometry>
       <material name="aluminum" >
         <color rgba="0.45 0.45 0.45 1"/>

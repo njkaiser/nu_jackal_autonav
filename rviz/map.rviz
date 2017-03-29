@@ -162,6 +162,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        velodyne_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: Jackal
       Robot Description: robot_description
       TF Prefix: ""
@@ -222,7 +227,7 @@ Visualization Manager:
         Min Value: -10
         Value: true
       Axis: Z
-      Channel Name: intensity
+      Channel Name: ring
       Class: rviz/PointCloud2
       Color: 255; 255; 255
       Color Transformer: Intensity
@@ -230,9 +235,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 112.5
+      Max Intensity: 9
       Min Color: 0; 0; 0
-      Min Intensity: 0
+      Min Intensity: 3
       Name: for costmap
       Position Transformer: XYZ
       Queue Size: 10
@@ -245,96 +250,6 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.339689
-        Min Value: 0.334078
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud
-      Color: 255; 255; 255
-      Color Transformer: AxisColor
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 4096
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: voxeled
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.01
-      Style: Points
-      Topic: /move_base/local_costmap/voxel_layer/clearing_endpoints
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
-    - Alpha: 0.8
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.101161
-        Min Value: -0.0672687
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: AxisColor
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 999999
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: floor cropboxed
-      Position Transformer: XYZ
-      Queue Size: 1
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.01
-      Style: Points
-      Topic: /velodyne_points/cropbox
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
-    - Alpha: 0.2
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: FlatColor
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 999999
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: floor outliers removed
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.01
-      Style: Flat Squares
-      Topic: /velodyne_points/rmvd_outliers
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
     - Alpha: 0.8
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -491,22 +406,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 15.418
+      Distance: 13.3189
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.327284
-        Y: -2.41182
-        Z: -1.56526
+        X: 2.73589
+        Y: 1.01948
+        Z: -3.02808
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.839799
+      Pitch: 0.554799
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.27691
+      Yaw: 1.62691
     Saved: ~
 Window Geometry:
   Camera Feed:

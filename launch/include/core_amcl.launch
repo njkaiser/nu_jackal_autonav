@@ -1,14 +1,12 @@
 <launch>
 
   <arg name="use_map_topic" default="false"/>
-  <!-- <arg name="scan_topic" default="front/scan" /> -->
   <arg name="scan_topic" default="emulated_scan" />
 
 
-
   <node pkg="amcl" type="amcl" name="amcl">
-    <remap from="scan" to="$(arg scan_topic)"/>
 
+    <remap from="scan" to="$(arg scan_topic)"/>
     <!-- OVERALL FILTER PARAMETERS -->
     <param name="min_particles" value="500"/>
     <!-- <param name="max_particles" value="2000"/> -->
@@ -44,7 +42,6 @@
     <!-- When set to true, AMCL will subscribe to the map topic rather than making a service call to receive its map.-->
     <!-- PRETTY SURE THIS ISN'T A REAL PARAMETER, NOT FOUND ON AMCL WEBSITE -->
     <!-- <param name="receive_map_topic" value="true"/> -->
-
 
     <!-- LASER MODEL PARAMETERS -->
     <!-- <param name="laser_min_range" value="0.2"/> -->

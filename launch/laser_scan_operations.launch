@@ -3,8 +3,8 @@
   <!-- fire up a nodelet manager to handle laser scan tools -->
   <node pkg="nodelet" type="nodelet" name="laser_scan_manager" args="manager" output="screen"/>
 
-  <!-- start LaserScan topic for laser_scan_matcher to create -->
-  <!-- emulated LaserScan topic from Velodyne PointCloud2 data -->
+  <!-- start LaserScan topic for laser_scan_matcher to create an -->
+  <!-- emulated LaserScan topic from Velodyne PointCloud2 output -->
   <!-- (could have used raw PointCloud2 data, but need LaserScan -->
   <!-- later for gmapping/AMCL anyway) -->
   <node pkg="nodelet" type="nodelet" name="emulated_LaserScan" args="load pointcloud_to_laserscan/pointcloud_to_laserscan_nodelet laser_scan_manager" output="screen">

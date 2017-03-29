@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: costmap points
+    SyncSource: Costmap Points
 Visualization Manager:
   Class: ""
   Displays:
@@ -162,6 +162,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        velodyne_mount:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: Jackal
       Robot Description: robot_description
       TF Prefix: ""
@@ -197,7 +202,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 999999
@@ -214,12 +219,12 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.45962
-        Min Value: 0.0453404
+        Max Value: 0.450462
+        Min Value: 0.0432462
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -233,7 +238,7 @@ Visualization Manager:
       Max Intensity: 103
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: costmap points
+      Name: Costmap Points
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
@@ -245,96 +250,6 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.395686
-        Min Value: 0.0563048
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud
-      Color: 255; 255; 255
-      Color Transformer: AxisColor
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 4096
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: voxeled
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.01
-      Style: Points
-      Topic: /move_base/local_costmap/voxel_layer/clearing_endpoints
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
-    - Alpha: 0.8
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.131514
-        Min Value: -0.120369
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: Intensity
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 100
-      Min Color: 0; 0; 0
-      Min Intensity: 1
-      Name: floor cropboxed
-      Position Transformer: XYZ
-      Queue Size: 1
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.01
-      Style: Points
-      Topic: /velodyne_points/floor_cropbox
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
-    - Alpha: 0.2
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.196171
-        Min Value: -0.126291
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: Intensity
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 94
-      Min Color: 0; 0; 0
-      Min Intensity: 1
-      Name: floor outliers removed
-      Position Transformer: XYZ
-      Queue Size: 10
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.01
-      Style: Flat Squares
-      Topic: /velodyne_points/floor_no_outliers
-      Unreliable: false
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
     - Alpha: 0.8
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -353,7 +268,7 @@ Visualization Manager:
       Max Intensity: 4096
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: LaserScan
+      Name: Emulated LaserScan
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
@@ -474,22 +389,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.5288
+      Distance: 7.88118
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.69815
-        Y: 6.04082
-        Z: 0.111594
+        X: 2.0615
+        Y: 5.56829
+        Z: 0.0138461
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.409796
+      Pitch: 0.429796
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.14369
+      Yaw: 1.67368
     Saved: ~
 Window Geometry:
   Camera Feed:
