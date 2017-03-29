@@ -38,6 +38,8 @@ namespace custom_planner
     // cout << traj.x_pts_.size() << endl;
   }
 
+  // ################################################################################
+  // ################################################################################
 
   // constructs the local planner (but technically this is not the constructor)
   void CustomPlanner::initialize(std::string name, tf::TransformListener* tf, costmap_2d::Costmap2DROS* costmap_ros)
@@ -91,6 +93,8 @@ namespace custom_planner
     cout << "initialize() function ended" << endl;
   } // END OF FUNCTION initialize()
 
+  // ################################################################################
+  // ################################################################################
 
   // set the [global] plan that the local planner is following
   bool CustomPlanner::setPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan)
@@ -105,24 +109,23 @@ namespace custom_planner
     //when we get a new plan, we also want to clear any latch we may have on goal tolerances
     latchedStopRotateController_.resetLatching();
 
-    // ROS_INFO("Got new plan");
 
-    // cout << "global plan size: " << orig_global_plan.size() << endl;
-    // for(int i = 0; i < orig_global_plan.size(); ++i)
-    // {
-    //   cout << "global plan[" << i << "]: " << orig_global_plan[i] << endl;
-    // }
-    // return dp_->setPlan(orig_global_plan);
-
-
+    cout << "global plan size: " << orig_global_plan.size() << endl;
     cout << "last point in global plan: " << orig_global_plan.back() << endl;
     cout << "current pose: (" << current_pose_.getOrigin().getX() << ' ' << current_pose_.getOrigin().getY() << ' ' << tf::getYaw(current_pose_.getRotation()) << ")" << endl;
+    for(int i = 0; i < orig_global_plan.size(); ++i)
+    {
+      cout << "global plan[" << i << "]: " << orig_global_plan[i] << endl;
+    }
+
 
     // THIS IS THE LINE THAT WAS REQUIRED TO GET THINGS TO WORK, CAN'T FAKE IT OUT WITH "true" OR "false"
     // cout << "setPlan() function ended" << endl;
     return planner_util_.setPlan(orig_global_plan);
   }
 
+  // ################################################################################
+  // ################################################################################
 
   // notifies nav_core if goal is reached
   bool CustomPlanner::isGoalReached()
@@ -154,6 +157,8 @@ namespace custom_planner
 
   }
 
+  // ################################################################################
+  // ################################################################################
 
   // given the current position, orientation, and velocity of the robot, compute velocity commands to send to the base
   bool CustomPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)
@@ -328,9 +333,10 @@ namespace custom_planner
       return isOk;
     }
 
-    // cout << "computeVelocityCommands() function ended" << endl;
   } // END OF FUNCTION computeVelocityCommands()
 
+  // ################################################################################
+  // ################################################################################
 
   // destructor - delete any dynamically allocated objects
   CustomPlanner::~CustomPlanner()
@@ -347,141 +353,8 @@ namespace custom_planner
   void CustomPlanner::publishLocalPlan(std::vector<geometry_msgs::PoseStamped>& path)
   { base_local_planner::publishPlan(path, l_plan_pub_); }
 
-
   // publish global plan
   void CustomPlanner::publishGlobalPlan(std::vector<geometry_msgs::PoseStamped>& path)
   { base_local_planner::publishPlan(path, g_plan_pub_); }
-
-
-  // FIND THE BEST PATH. DUH.
-  // base_local_planner::Trajectory CustomPlanner::findBestPath(tf::Stamped<tf::Pose> global_pose,tf::Stamped<tf::Pose> global_vel, tf::Stamped<tf::Pose>& drive_velocities, std::vector<geometry_msgs::Point> footprint_spec)
-  // {
-  //   obstacle_costs_.setFootprint(footprint_spec);
-  //
-  //   //make sure that our configuration doesn't change mid-run
-  //   boost::mutex::scoped_lock l(configuration_mutex_);
-  //
-  //   Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
-  //   Eigen::Vector3f vel(global_vel.getOrigin().getX(), global_vel.getOrigin().getY(), tf::getYaw(global_vel.getRotation()));
-  //   geometry_msgs::PoseStamped goal_pose = global_plan_.back();
-  //   Eigen::Vector3f goal(goal_pose.pose.position.x, goal_pose.pose.position.y, tf::getYaw(goal_pose.pose.orientation));
-  //   base_local_planner::LocalPlannerLimits limits = planner_util_->getCurrentLimits();
-  //
-  //   // prepare cost functions and generators for this run
-  //   generator_.initialise(pos,
-  //       vel,
-  //       goal,
-  //       &limits,
-  //       vsamples_);
-  //
-  //   result_traj_.cost_ = -7;
-  //   // find best trajectory by sampling and scoring the samples
-  //   std::vector<base_local_planner::Trajectory> all_explored;
-  //   scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored);
-  //
-  //   if(publish_traj_pc_)
-  //   {
-  //       base_local_planner::MapGridCostPoint pt;
-  //       traj_cloud_->points.clear();
-  //       traj_cloud_->width = 0;
-  //       traj_cloud_->height = 0;
-  //       std_msgs::Header header;
-  //       pcl_conversions::fromPCL(traj_cloud_->header, header);
-  //       header.stamp = ros::Time::now();
-  //       traj_cloud_->header = pcl_conversions::toPCL(header);
-  //       for(std::vector<base_local_planner::Trajectory>::iterator t=all_explored.begin(); t != all_explored.end(); ++t)
-  //       {
-  //           if(t->cost_<0)
-  //               continue;
-  //           // Fill out the plan
-  //           for(unsigned int i = 0; i < t->getPointsSize(); ++i) {
-  //               double p_x, p_y, p_th;
-  //               t->getPoint(i, p_x, p_y, p_th);
-  //               pt.x=p_x;
-  //               pt.y=p_y;
-  //               pt.z=0;
-  //               pt.path_cost=p_th;
-  //               pt.total_cost=t->cost_;
-  //               traj_cloud_->push_back(pt);
-  //           }
-  //       }
-  //       traj_cloud_pub_.publish(*traj_cloud_);
-  //   }
-  //
-  //   // verbose publishing of point clouds
-  //   if (publish_cost_grid_pc_) {
-  //     //we'll publish the visualization of the costs to rviz before returning our best trajectory
-  //     map_viz_.publishCostCloud(planner_util_->getCostmap());
-  //   }
-  //
-  //   // debrief stateful scoring functions
-  //   oscillation_costs_.updateOscillationFlags(pos, &result_traj_, planner_util_->getCurrentLimits().min_trans_vel);
-  //
-  //   //if we don't have a legal trajectory, we'll just command zero
-  //   if (result_traj_.cost_ < 0) {
-  //     drive_velocities.setIdentity();
-  //   } else {
-  //     tf::Vector3 start(result_traj_.xv_, result_traj_.yv_, 0);
-  //     drive_velocities.setOrigin(start);
-  //     tf::Matrix3x3 matrix;
-  //     matrix.setRotation(tf::createQuaternionFromYaw(result_traj_.thetav_));
-  //     drive_velocities.setBasis(matrix);
-  //   }
-  //
-  //   return result_traj_;
-  // } // END OF FUNCTION findBestPath()
-
-
-  // void CustomPlanner::updatePlanAndLocalCosts(tf::Stamped<tf::Pose> global_pose, const std::vector<geometry_msgs::PoseStamped>& new_plan)
-  // {
-  //   cout << "updatePlanAndLocalCosts() function called" << endl;
-  //
-  //   global_plan_.resize(new_plan.size());
-  //   for (unsigned int i = 0; i < new_plan.size(); ++i) {
-  //     global_plan_[i] = new_plan[i];
-  //   }
-  //
-  //   // costs for going away from path
-  //   path_costs_.setTargetPoses(global_plan_);
-  //
-  //   // costs for not going towards the local goal as much as possible
-  //   goal_costs_.setTargetPoses(global_plan_);
-  //
-  //   // alignment costs
-  //   geometry_msgs::PoseStamped goal_pose = global_plan_.back();
-  //
-  //   Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
-  //   double sq_dist =
-  //       (pos[0] - goal_pose.pose.position.x) * (pos[0] - goal_pose.pose.position.x) +
-  //       (pos[1] - goal_pose.pose.position.y) * (pos[1] - goal_pose.pose.position.y);
-  //
-  //   // we want the robot nose to be drawn to its final position
-  //   // (before robot turns towards goal orientation), not the end of the
-  //   // path for the robot center. Choosing the final position after
-  //   // turning towards goal orientation causes instability when the
-  //   // robot needs to make a 180 degree turn at the end
-  //   std::vector<geometry_msgs::PoseStamped> front_global_plan = global_plan_;
-  //   double angle_to_goal = atan2(goal_pose.pose.position.y - pos[1], goal_pose.pose.position.x - pos[0]);
-  //   front_global_plan.back().pose.position.x = front_global_plan.back().pose.position.x +
-  //     forward_point_distance_ * cos(angle_to_goal);
-  //   front_global_plan.back().pose.position.y = front_global_plan.back().pose.position.y + forward_point_distance_ *
-  //     sin(angle_to_goal);
-  //
-  //   goal_front_costs_.setTargetPoses(front_global_plan);
-  //
-  //   // keeping the nose on the path
-  //   if (sq_dist > forward_point_distance_ * forward_point_distance_ * cheat_factor_) {
-  //     double resolution = planner_util_.getCostmap()->getResolution();
-  //     alignment_costs_.setScale(resolution * pdist_scale_ * 0.5);
-  //     // costs for robot being aligned with path (nose on path, not ju
-  //     alignment_costs_.setTargetPoses(global_plan_);
-  //   } else {
-  //     // once we are close to goal, trying to keep the nose close to anything destabilizes behavior.
-  //     alignment_costs_.setScale(0.0);
-  //   }
-  //
-  //   cout << "updatePlanAndLocalCosts() function ended" << endl;
-  // }
-
 
 }; // END OF NAMESPACE custom_planner

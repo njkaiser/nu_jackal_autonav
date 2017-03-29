@@ -26,7 +26,7 @@ public:
   Move(ros::NodeHandle &nh)
   {
     m_nh = nh;
-    cmd_pub = m_nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    cmd_pub = m_nh.advertise<geometry_msgs::Twist>("/cmd_vel/keyboard", 1);
   }
 
   int driveKeyboard()

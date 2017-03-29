@@ -27,7 +27,7 @@ def rockabyebaby():
 if __name__ == '__main__':
     rospy.init_node('jackal_control')
     rate = rospy.Rate(100)
-    pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
+    pub = rospy.Publisher('/cmd_vel/keyboard', Twist, queue_size=5)
     try:
         rockabyebaby()
     except rospy.ROSInterruptException:
