@@ -1,0 +1,9 @@
+<launch>
+
+  <!--- Run gmapping -->
+  <include file="$(find nu_jackal_autonav)/launch/include/gmap_core.launch" />
+
+  <!--- Run Move Base -->
+  <include file="$(find nu_jackal_autonav)/launch/include/move_base_core.launch" />
+
+</launch>
