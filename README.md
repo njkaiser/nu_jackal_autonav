@@ -35,12 +35,12 @@ Note: this assumes you already have a ***full*** ROS Indigo installation (`ros-i
 
 #### This Package
 To install this package:
-1. Clone [this repo][9] into a workspace and build\*
+1. Clone [this repo][9] into a workspace and build<sup>&dagger;</sup>
 2. SSH into Jackal and repeat the process
 
 This requires Jackal to be set up and connected to the internet. For help with this, Clearpath has provided an [excellent walkthrough][10].
 
-\**I highly recommend using [catkin_tools][11], which has a modernized version of the catkin_make command and other useful command line tools for working with ROS/catkin packages*
+<sup>&dagger;</sup>*I highly recommend using [catkin_tools][11], which has a modernized version of the catkin_make command and other useful command line tools for working with ROS/catkin packages*
 
 
 ## Instructions For Use
