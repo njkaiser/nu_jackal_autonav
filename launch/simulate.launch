@@ -1,11 +1,10 @@
 <launch>
 
-  <!-- <arg name="config" default="nu_jackal_autonav"/> -->
   <arg name="gui" default="false"/>
   <arg name="headless" default="true"/>
   <arg name="scene" default="$(find jackal_gazebo)/worlds/jackal_race.world" />
 
-  <!-- start gazebo -->
+  <!-- start Gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0" />
     <arg name="gui" value="$(arg gui)" />
@@ -19,11 +18,14 @@
     $(find nu_jackal_autonav)/urdf/jackal.urdf.xacro" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
-  <!-- any way around this? I'm literally copying the clearpath launch files... -->
+  <!-- launch Jackal control nodes -->
   <include file="$(find jackal_control)/launch/control.launch" />
   <include file="$(find jackal_control)/launch/teleop.launch">
     <arg name="joystick" value="false"/>
   </include>
+
+  <!-- twist_mux now implemented on robot, will need during simulation as well -->
+  <include file="$(find nu_jackal_autonav)/launch/twist_mux.launch" />
 
   <!-- spawn Jackal -->
    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -model jackal -param robot_description -x 0 -y 0.3 -z 0 -R 0 -P 0 -Y 0.75" />
