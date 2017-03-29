@@ -22,10 +22,6 @@ Parameters have been tuned specifically for Northwestern's robot/environment com
 #### Prerequisites
 To install all the dependencies, fire up a terminal and run:
 
-<!-- `sudo apt-get update`
-
-`sudo apt-get install ros-indigo-velodyne ros-indigo-velodyne-description ros-indigo-velodyne-simulator ros-indigo-jackal-desktop ros-indigo-jackal-gazebo` -->
-
 ```bash
 sudo apt-get update
 sudo apt-get install ros-indigo-velodyne ros-indigo-velodyne-description ros-indigo-velodyne-simulator ros-indigo-jackal-desktop ros-indigo-jackal-gazebo
@@ -48,13 +44,13 @@ This requires Jackal to be set up and connected to the internet. For help with t
 
 
 ## Instructions For Use
-Navigate to your workspace and source your setup file: `source devel/setup.bash`. If you're running on the real robot, skip step 1, as it just launches the robot simulation. Choose only one of steps 3, 4, or 5, depending on what you want to do.
+Navigate to your workspace and source your setup file: `source devel/setup.bash`. If you're running on the real robot, skip step 1, as it just launches the robot simulation. Choose only one of steps 4, 5, or 6, depending on what you want to do.
 
 1. `roslaunch nu_jackal_autonav simulate.launch`
 
     This loads a URDF of Northwestern's Jackal configuration to the parameter server, starts up a Gazebo session with Clearpath's tutorial map, and spawns Jackal into it. By default, no GUI is shown, but can be shown by appending `gui:=true` to the end of the roslaunch command. See the beginning of the launch file for other helpful command line arguments.
 
-2. `roslaunch nu_jackal_autonav ground_plane.launch`
+2. `roslaunch nu_jackal_autonav pointcloud_filter.launch`
 
     This command eliminates the z drift between the `odom` and `base_link` frames and starts a nodelet manager to handle all of the pointcloud filtering. The outputs are a new `tf` frame named `odom_corrected` and a cascaded series of new pointcloud topics, the important one being `/velodyne_points/for_costmap`. The individual filters are:
     - a cropbox to eliminate any points further than 4 meters from Jackal in the x- and y-directions, and any points below 0.0 or above 0.4 meters in z
@@ -62,21 +58,25 @@ Navigate to your workspace and source your setup file: `source devel/setup.bash`
     - a voxel grid downsampler
     - a custom filter which eliminates any points too close to the robot or within 1.5&deg; of the ground
 
-3. `roslaunch nu_jackal_autonav odom_navigation_demo.launch`
+3. `roslaunch nu_jackal_autonav laser_scan_operations.launch`
+
+    I added some functionality and broke this node out as a separate entity instead of including it in multiple launch files. It produces an emulated `LaserScan` topic, runs an instance of `laser_scan_matcher`, and converts the output into an `odometry` topic for use by the the main `robot_localization` running on Jackal, which should help improve the odometry estimates.
+
+4. `roslaunch nu_jackal_autonav odom_navigation.launch`
 
     This node is similar to the file in the `jackal_navigation` package with the same name. This puts Jackal in pure odometric navigation mode. Under the hood it just runs `move_base` and loads the correct parameters from yaml files stored in the `params` directory. All you have to do is send Jackal goal poses using RViz and watch as it navigates there autonomously.
 
-4. `roslaunch nu_jackal_autonav gmapping_demo.launch`
+5. `roslaunch nu_jackal_autonav gmapping.launch`
 
-    Again, this is similar to its `jackal_navigation` counterpart. It starts `gmapping` and a `pointcoud_to_laserscan` node (since `gmapping` needs a `LaserScan` topic to function). Run this to make a map of whatever environment(s) Jackal will be navigating in. Drive around using the joystick controller until you're satisfied with the costmap (viewable via RViz). Only 1 map is needed for each environment. Also, please note you'll need to save the map once you're satisfied with it by running `rosrun map_server map_saver -f map-name-goes-here` in a separate terminal.
+    Again, this is similar to its `jackal_navigation` counterpart. It starts `gmapping` and `move_base` with the correct parameters. Run this to make a map of whatever environment(s) Jackal will be navigating in. Drive around using the joystick controller until you're satisfied with the costmap (viewable in RViz). Only 1 map is needed for each environment. Also, please note you'll need to save the map once you're satisfied with it by running `rosrun map_server map_saver -f map-name-goes-here` in a separate terminal.
 
-5. `roslaunch nu_jackal_autonav amcl_demo.launch`
+6. `roslaunch nu_jackal_autonav amcl.launch`
 
-    This is the heart of Jackal's navigational capabilities. When working correctly, this node estimates the robot's pose in the map. The launch file starts [AMCL][8] and `pointcoud_to_laserscan` (AMCL also needs a LaserScan topic). You'll need to modify the `map_file` parameter to point to the map you created in the last step (preferably stored in `maps` directory).
+    This is the heart of Jackal's navigational capabilities. When working correctly, this node estimates the robot's pose in the map. The launch file starts [AMCL][8] and `move_base`. You'll need to modify the `map_file` parameter to point to the map you created in the last step (stored in `maps` directory).
 
-6. `roslaunch nu_jackal_autonav view_rviz.launch`
+7. `roslaunch nu_jackal_autonav view_rviz.launch`
 
-    This runs one of two RViz sessions. If you're running `gmapping_demo` or `amcl_demo`, you'll need to append `config:=amcl` to the launch command. With this running, you can:
+    This runs one of two RViz sessions. If you're running `gmapping_demo` or `amcl_demo`, you'll need to append `config:=map` to the launch command. With this running, you can:
     - send a pose estimate to `AMCL`
     - send a navigation goal to `move_base`
     - control the robot using convenient and intuitive sliders
@@ -89,6 +89,12 @@ Navigate to your workspace and source your setup file: `source devel/setup.bash`
     - view the emulated laser scan (used by `gmapping`/`AMCL`)
 
 
+## Future Work
+Currently, I'm working on a custom local planner plugin to replace the default [dwa_local_planner][13], since it's not ideal for this specific robot setup. I plan to release as a separate package when it's complete.
+
+I'm also working on an RViz plugin for canceling navigation goals, but haven't had much time to work on this yet.
+
+
 ## Other Considerations
 - you might need a decent, dedicated router for fast and uninterrupted data transfer
 - if the laser location is changed, it will need to be updated in the URDF
@@ -99,11 +105,6 @@ Navigate to your workspace and source your setup file: `source devel/setup.bash`
 - if navigation is acting funny or not working at all, check that `base_local_planner` isn't set to `custom_planner/CustomPlanner` in [launch/include/move_base.launch][12], since I'm not finished developing it yet
 - OpenCV 2.4 was used, I have not checked compatibility with OpenCV 3
 - PCL 1.7 was used, I have not checked compatibility with newer versions
-
-## Future Work
-Currently, I'm working on a custom local planner plugin to replace the default [dwa_local_planner][13], since it's not ideal for this specific robot setup. I plan to release as a separate package when it's complete.
-
-I'm also working on an RViz plugin for canceling navigation goals, but haven't had much time to work on this yet.
 
 
 <!-- File Locations -->
