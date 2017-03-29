@@ -15,8 +15,10 @@ These changes basically set the correct `ROS_IP` environment variable correctly.
 ### Executing Custom Scripts on Startup
 Clearpath wrote a nice walkthrough [here][1] on how to augment Jackal's boot process - follow this guide to add your own supplementations. Currently, I've added the following:
 
-1. Custom modifications to the default URDF for our Jackal setup (/opt/ros/indigo/share/jackal_description/urdf/jackal.urdf.xacro)
-2. A launch file to start up the necessary drivers/scripts for ROS communication with the Velodyne (/etc/ros/indigo/ros.d/velodyne_startup.launch )
+1. A launch file to start up the necessary drivers/scripts for ROS communication with the Velodyne (/etc/ros/indigo/ros.d/velodyne_startup.launch)
+2. Custom modifications to the default URDF for our Jackal setup (/opt/ros/indigo/share/jackal_description/urdf/jackal.urdf.xacro)
+3. Addition of a laser_scan_matcher output (as odom1) to the odometry EKF ($(find jackal_control)/configs/robot_localization.yaml) 
+
 
 <!-- Links -->
 [1]: https://www.clearpathrobotics.com/assets/guides/jackal/startup.html
