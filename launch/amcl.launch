@@ -1,15 +1,15 @@
 <launch>
 
   <!-- UNCOMMENT THE RELEVANT MAP -->
-  <!-- <arg name="map_file" default="D110_1.yaml"/> -->
-  <!-- <arg name="map_file" default="D110_2.yaml"/> -->
-  <!-- <arg name="map_file" default="D110_3.yaml"/> -->
-  <!-- <arg name="map_file" default="D110_4.yaml"/> -->
-  <!-- <arg name="map_file" default="boxed_in.yaml/> -->
-  <arg name="map_file" default="tutorial_map.yaml"/>
+  <!-- <arg name="map_file" default="D110_1"/> -->
+  <!-- <arg name="map_file" default="D110_2"/> -->
+  <!-- <arg name="map_file" default="D110_3"/> -->
+  <!-- <arg name="map_file" default="D110_4"/> -->
+  <arg name="map_file" default="boxed_in"/>
+  <!-- <arg name="map_file" default="tutorial_map"/> -->
 
   <!-- run the map server -->
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find nu_jackal_autonav)/maps/$(arg map_file)" />
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find nu_jackal_autonav)/maps/$(arg map_file).yaml" />
 
   <!-- run AMCL -->
   <include file="$(find nu_jackal_autonav)/launch/include/core_amcl.launch" />

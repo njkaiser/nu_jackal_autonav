@@ -30,10 +30,13 @@
     <!--Exponential decay rate for the fast average weight filter, used in deciding when to recover by adding random poses. A good value might be 0.1. -->
     <param name="recovery_alpha_fast" value="0.1"/>
 
-    <!-- Initial pose mean -->
+    <!-- Initial pose mean and covariances -->
     <param name="initial_pose_x" value="0.0" />
     <param name="initial_pose_y" value="0.0" />
     <param name="initial_pose_a" value="0.0" />
+    <param name="initial_cov_xx" value="0.1" />
+    <param name="initial_cov_yy" value="0.1" />
+    <param name="initial_cov_aa" value="0.1" />
     <!-- Publish scans from best pose at a max of 10 Hz -->
     <param name="gui_publish_rate" value="5.0"/>
     <param name="use_map_topic" value="$(arg use_map_topic)"/>

@@ -16,10 +16,10 @@
     <remap from="~input" to="/velodyne_points" />
     <remap from="~output" to="/velodyne_points/cropbox" />
     <rosparam>
-      min_x: -4.12
-      max_x: 3.88
-      min_y: -4.0
-      max_y: 4.0
+      min_x: -8.12
+      max_x: 7.88
+      min_y: -8.0
+      max_y: 8.0
       min_z: -0.338
       max_z: 0.112
     </rosparam>

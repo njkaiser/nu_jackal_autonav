@@ -20,7 +20,7 @@ topics:
   name    : interactive_markers
   topic   : cmd_vel/marker
   timeout : 0.5
-  priority: 90
+  priority: 80
 -
   name    : navigation
   topic   : cmd_vel/nav
