@@ -33,9 +33,10 @@ voxel_layer:
   # ADDED:
   enabled: true
   observation_sources: scan
-  # scan: {sensor_frame: velodyne, data_type: LaserScan, topic: /emulated_scan, marking: true, clearing: true, min_obstacle_height: 0.05, max_obstacle_height: 0.4, obstacle_range: 5.0, raytrace_range: 5.0}
+  scan: {sensor_frame: velodyne, data_type: LaserScan, topic: /emulated_scan, marking: true, clearing: true, min_obstacle_height: 0.05, max_obstacle_height: 0.4, obstacle_range: 4.0, raytrace_range: 10.0}
   # scan: {sensor_frame: velodyne, data_type: LaserScan, topic: /emulated_scan, marking: false, clearing: true, min_obstacle_height: 0.02, max_obstacle_height: 0.5, obstacle_range: 5.0, raytrace_range: 5.0}
-  scan: {sensor_frame: velodyne, data_type: PointCloud2, topic: /velodyne_points/for_costmap, marking: true, clearing: true, min_obstacle_height: 0.05, max_obstacle_height: 0.4, obstacle_range: 10.0, raytrace_range: 8.0, expected_update_rate: 5}
+  # scan: {sensor_frame: velodyne, data_type: PointCloud2, topic: /velodyne_points/for_costmap, marking: true, clearing: true, min_obstacle_height: 0.05, max_obstacle_height: 0.4, obstacle_range: 10.0, raytrace_range: 8.0, expected_update_rate: 5}
+  # scan: {sensor_frame: velodyne, data_type: LaserScan, topic: /emulated_scan_clearing, marking: false, clearing: true, min_obstacle_height: 0.05, max_obstacle_height: 0.4, obstacle_range: 20.0, raytrace_range: 20.0}
 
 inflater_layer:
  # ADDED:

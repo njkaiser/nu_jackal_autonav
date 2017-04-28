@@ -16,10 +16,10 @@
     <remap from="~input" to="/velodyne_points" />
     <remap from="~output" to="/velodyne_points/cropbox" />
     <rosparam>
-      min_x: -8.12
-      max_x: 7.88
-      min_y: -8.0
-      max_y: 8.0
+      min_x: -20.12
+      max_x: 19.88
+      min_y: -20.0
+      max_y: 20.0
       min_z: -0.338
       max_z: 0.112
     </rosparam>
@@ -30,8 +30,8 @@
     <remap from="~input" to="/velodyne_points/cropbox" />
     <remap from="~output" to="/velodyne_points/no_outliers" />
     <rosparam>
-      radius_search: 0.05 # Must have min_neighbors w/in this radius to survive
-      min_neighbors: 3
+      radius_search: 0.05 # must have min_neighbors w/in this radius to survive
+      min_neighbors: 8 # any lower than this, and phantom points might start popping up at Jackal's rear driver's side corner 
     </rosparam>
   </node>
 

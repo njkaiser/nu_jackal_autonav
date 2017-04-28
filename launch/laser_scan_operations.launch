@@ -28,6 +28,28 @@
     </rosparam>
   </node>
 
+  <!-- trying out a 2nd LaserScan topic for clearing only -->
+  <node pkg="nodelet" type="nodelet" name="emulated_LaserScan_clearing" args="load pointcloud_to_laserscan/pointcloud_to_laserscan_nodelet laser_scan_manager" output="screen">
+    <remap from="cloud_in" to="/velodyne_points/cropbox"/>
+    <remap from="scan" to="emulated_scan_clearing"/>
+    <rosparam>
+      target_frame: velodyne <!-- transform the pointcloud into this frame before converting to a laser scan -->
+
+      <!-- get these limits out of the way since we're using a cropboxed cloud input already -->
+      min_height: -99.0
+      max_height: 99.0
+      range_min: 0.05
+      range_max: 99.0
+
+      angle_min: -3.1415
+      angle_max: 3.1415
+      angle_increment: 0.01 <!-- too high and Jackal think's there are gaps in the wall it's driving next to that it can fit through, leading to a crash -->
+      scan_time: 0.1 <!-- time between scans (in seconds) -->
+      concurrency_level: 0 <!-- Number of threads to use for processing pointclouds. If 0, automatically detect number of cores and use the equivalent number of threads. Input queue size for pointclouds is tied to this parameter. In nodelet form, number of threads is capped by the nodelet manager configuration. -->
+      use_inf: false <!-- If disabled, report infinite range (no obstacle) as range_max + 1. Otherwise report infinite range as +inf. Associated with the inf_is_valid parameter for costmap_2d obstacle layers. -->
+    </rosparam>
+  </node>
+
 
   <!-- launch laser_scan_matcher, primary output = Pose2D estimate -->
   <node pkg="nodelet" type="nodelet" name="laser_scan_matcher" args="load laser_scan_matcher/LaserScanMatcherNodelet laser_scan_manager " output="screen">
