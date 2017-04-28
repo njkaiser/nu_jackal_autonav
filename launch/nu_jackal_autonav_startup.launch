@@ -1,0 +1,23 @@
+<launch>
+  <!-- A NOTE FROM YOUR DEAR FRIEND NATE: -->
+  <!-- it's easier to manage file dependencies by just including them here (instead of copying them individually into ros.d directory) -->
+
+  <!-- start up Velodyne communication drivers  -->
+  <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch">
+    <!-- OPTIONAL ARGUMENTS SHOULD BE INCLUDED IN ORIGINAL FILE, NOT HERE -->
+  </include>
+
+  <!-- eliminates z drift, publishes odom_corrected tf frame for navigation -->
+  <node pkg="nu_jackal_autonav" type="ground_plane_cheat" name="ground_plane_cheat" output="screen"/>
+
+  <!-- creates final pointcloud used for costmap  -->
+  <include file="$(find nu_jackal_autonav)/launch/pointcloud_filter.launch">
+    <!-- OPTIONAL ARGUMENTS SHOULD BE INCLUDED IN ORIGINAL FILE, NOT HERE -->
+  </include>
+
+  <!-- creates 2D laserscan from pointcloud and starts laser_scan_matcher -->
+  <include file="$(find nu_jackal_autonav)/launch/laser_scan_operations.launch">
+    <!-- OPTIONAL ARGUMENTS SHOULD BE INCLUDED IN ORIGINAL FILE, NOT HERE -->
+  </include>
+
+</launch>
