@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /TF1/Frames1
       Splitter Ratio: 0.641667
     Tree Height: 742
   - Class: rviz/Selection
@@ -26,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: for costmap
+    SyncSource: Costmap Points
 Visualization Manager:
   Class: ""
   Displays:
@@ -38,94 +37,19 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: false
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
-        All Enabled: false
-        base_link:
-          Value: true
-        chassis_link:
-          Value: false
-        fenders_link:
-          Value: false
-        front_camera:
-          Value: false
-        front_camera_beam:
-          Value: false
-        front_camera_mount:
-          Value: false
-        front_camera_optical:
-          Value: false
-        front_left_wheel_link:
-          Value: false
-        front_mount:
-          Value: false
-        front_right_wheel_link:
-          Value: false
-        imu_link:
-          Value: false
-        map:
-          Value: true
-        mid_mount:
-          Value: false
-        navsat_link:
-          Value: false
-        odom:
-          Value: true
-        odom_corrected:
-          Value: false
-        rear_left_wheel_link:
-          Value: false
-        rear_mount:
-          Value: false
-        rear_right_wheel_link:
-          Value: false
-        velodyne:
-          Value: false
-        velodyne_base_link:
-          Value: false
-        velodyne_mount:
-          Value: false
+        All Enabled: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          odom_corrected:
-            odom:
-              base_link:
-                chassis_link:
-                  fenders_link:
-                    {}
-                  front_left_wheel_link:
-                    {}
-                  front_right_wheel_link:
-                    {}
-                  imu_link:
-                    {}
-                  mid_mount:
-                    front_mount:
-                      front_camera_mount:
-                        front_camera_beam:
-                          front_camera:
-                            front_camera_optical:
-                              {}
-                      velodyne_base_link:
-                        velodyne:
-                          velodyne_mount:
-                            {}
-                    rear_mount:
-                      {}
-                  navsat_link:
-                    {}
-                  rear_left_wheel_link:
-                    {}
-                  rear_right_wheel_link:
-                    {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Alpha: 0.5
       Cell Size: 1
       Class: rviz/Grid
@@ -311,10 +235,10 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 11
+      Max Intensity: 12
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: for costmap
+      Name: Costmap Points
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
@@ -360,11 +284,11 @@ Visualization Manager:
       Class: rviz/Map
       Color Scheme: costmap
       Draw Behind: false
-      Enabled: true
+      Enabled: false
       Name: Global Costmap
       Topic: /move_base/global_costmap/costmap
       Unreliable: false
-      Value: true
+      Value: false
     - Alpha: 0.7
       Class: rviz/Map
       Color Scheme: costmap
@@ -448,11 +372,11 @@ Visualization Manager:
     - Arrow Length: 0.3
       Class: rviz/PoseArray
       Color: 190; 190; 190
-      Enabled: false
+      Enabled: true
       Name: Particle Filter
       Topic: /particlecloud
       Unreliable: false
-      Value: false
+      Value: true
     - Alpha: 0.7
       Class: rviz/Map
       Color Scheme: costmap
@@ -482,22 +406,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.11935
+      Distance: 7.21275
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 3.30561
-        Y: -6.07637
-        Z: 1.98219
+        X: -0.0250154
+        Y: -6.1603
+        Z: 0.448392
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.3498
+      Pitch: 0.6498
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.09009
+      Yaw: 2.16008
     Saved: ~
 Window Geometry:
   Camera Feed:
