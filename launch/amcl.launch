@@ -1,12 +1,14 @@
 <launch>
 
   <!-- UNCOMMENT THE RELEVANT MAP -->
+  <!-- <arg name="map_file" default="tutorial_map"/> -->
   <!-- <arg name="map_file" default="D110_1"/> -->
   <!-- <arg name="map_file" default="D110_2"/> -->
   <!-- <arg name="map_file" default="D110_3"/> -->
   <!-- <arg name="map_file" default="D110_4"/> -->
-  <arg name="map_file" default="boxed_in"/>
-  <!-- <arg name="map_file" default="tutorial_map"/> -->
+  <!-- <arg name="map_file" default="boxed_in"/> -->
+  <!-- <arg name="map_file" default="willens_atrium_1"/> -->
+  <arg name="map_file" default="willens_atrium_2"/>
 
   <!-- run the map server -->
   <node name="map_server" pkg="map_server" type="map_server" args="$(find nu_jackal_autonav)/maps/$(arg map_file).yaml" />
