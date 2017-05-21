@@ -15,8 +15,6 @@
   <include file="$(find nu_jackal_autonav)/launch/include/core_amcl.launch" />
 
   <!-- run move_base -->
-  <include file="$(find nu_jackal_autonav)/launch/include/core_move_base.launch" >
-    <remap from="cmd_vel" to="move_base/cmd_vel" />
-  </include>
+  <include file="$(find nu_jackal_autonav)/launch/include/core_move_base.launch" />
 
 </launch>
