@@ -24,7 +24,7 @@ To install all the dependencies, fire up a terminal and run:
 
 ```bash
 sudo apt-get update
-sudo apt-get install ros-indigo-velodyne ros-indigo-velodyne-description ros-indigo-velodyne-simulator ros-indigo-jackal-desktop ros-indigo-jackal-gazebo
+sudo apt-get install ros-indigo-velodyne ros-indigo-velodyne-description ros-indigo-velodyne-simulator ros-indigo-jackal-desktop ros-indigo-jackal-gazebo ros-indigo-navigation
 ```
 
 Alternatively, I hope to clean everything up and have `rosdep install name-of-package` functioning properly in the near future. **Important Note:** you may need to install `ros-indigo-velodyne` from source, per instructions [here][14] and [here][15], although installing from apt-get seems to be fully functioning when I last checked.
