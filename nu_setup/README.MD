@@ -12,6 +12,8 @@ When Jackal was freshly configured, 3 files were modified to allow bi-directiona
 
 These changes basically set the correct `ROS_IP` environment variable correctly. The files are included in the repo with this README, should something happen to Jackal's computer. Any modifications we made have been commented in each of the files. **Note:** these should *NOT* need to changed again unless the on-board computer or OS is modified.
 
+You'll need to execute `remote-jackal.sh` on your control computer to set your environment variables as well. Change `ROS_HOSTNAME` to the name of your computer (mine is MacbookPro).
+
 ### Executing Custom Scripts on Startup
 Clearpath wrote a nice walkthrough [here][1] on how to augment Jackal's boot process - follow this guide to add your own supplementations. I've added quite a few things - see **Additions** section below.
 
